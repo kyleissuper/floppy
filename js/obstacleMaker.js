@@ -1,8 +1,8 @@
 const obstacleMaker = (() => {
   let obstacles;
-  const width = 60;
+  const width = 70;
   const height = 600;
-  const xGap = 200;
+  const xGap = 190;
   const yGap = 230;
   const maxPairs = 5;
   const color = "#f00";

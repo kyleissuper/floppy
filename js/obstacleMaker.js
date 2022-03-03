@@ -24,10 +24,9 @@ const obstacleMaker = (() => {
 
   function reset() {
     obstacles = [];
-    let lastX;
     addObstaclePair(600);
     while (obstacles.length < maxPairs * 2) {
-      lastX = obstacles[obstacles.length - 1].posX;
+      const lastX = obstacles[obstacles.length - 1].posX;
       addObstaclePair(lastX + width + xGap);
     }
   }

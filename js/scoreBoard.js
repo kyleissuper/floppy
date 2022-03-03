@@ -7,6 +7,8 @@ const scoreBoard = (function scoreMaker() {
     max: 0
   };
 
+  const localStorage = window.localStorage;
+
   const publicAPI = {
     nextFrame,
     draw,
@@ -30,6 +32,12 @@ const scoreBoard = (function scoreMaker() {
   }
 
   function reset() {
+    let max = Math.max(
+      localStorage.getItem("maxScore"),
+      state.max
+    );
+    localStorage.setItem("maxScore", max);
+    state.max = max;
     state.counter = 0;
   }
 

@@ -1,5 +1,4 @@
-const obstacleMaker = (function obstacleMaker() {
-
+const obstacleMaker = (() => {
   let obstacles;
   const width = 60;
   const height = 600;
@@ -12,7 +11,7 @@ const obstacleMaker = (function obstacleMaker() {
     reset,
     nextFrame,
     draw,
-    getBoxes
+    getBoxes,
   };
 
   return publicAPI;
@@ -26,54 +25,53 @@ const obstacleMaker = (function obstacleMaker() {
   function reset() {
     obstacles = [];
     let lastX;
-    addObstaclePair(600, yGap);
-    while (obstacles.length < 5*2) {
-      lastX = obstacles[obstacles.length-1].posX;
-      addObstaclePair(lastX + width + xGap, yGap);
+    addObstaclePair(600);
+    while (obstacles.length < maxPairs * 2) {
+      lastX = obstacles[obstacles.length - 1].posX;
+      addObstaclePair(lastX + width + xGap);
     }
   }
 
   function nextFrame(physics) {
-    for (let i=0; i<obstacles.length; i++) {
+    for (let i = 0; i < obstacles.length; i += 1) {
       obstacles[i].posX += physics.scrollSpeed;
     }
     while (obstacles[0].posX + width < 0) {
-      let lastX = obstacles[obstacles.length-1].posX;
-      addObstaclePair(lastX + width + xGap, yGap);
+      const lastX = obstacles[obstacles.length - 1].posX;
+      addObstaclePair(lastX + width + xGap);
       obstacles.shift();
       obstacles.shift();
     }
   }
-  
+
   function draw(ctx, lagPercent) {
-    for (let i=0; i<obstacles.length; i++) {
+    for (let i = 0; i < obstacles.length; i += 1) {
       ctx.fillStyle = color;
       ctx.rect(
         obstacles[i].posX,
         obstacles[i].posY,
         width,
-        height
+        height,
       );
       ctx.fill();
     }
   }
 
-  function addObstaclePair(posX, yGap) {
-    let posY = -height + Math.random() * (600 - yGap);
+  function addObstaclePair(posX) {
+    const posY = -height + Math.random() * (600 - yGap);
     obstacles.push({
-      posX: posX,
-      posY: posY,
-      width: width,
-      height: height
+      posX,
+      posY,
+      width,
+      height,
     });
     obstacles.push({
-      posX: posX,
+      posX,
       posY: posY + height + yGap,
-      width: width,
-      height: height
+      width,
+      height,
     });
   }
-
 })();
 
-export { obstacleMaker };
+export default obstacleMaker;

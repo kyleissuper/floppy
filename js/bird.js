@@ -1,11 +1,10 @@
-const bird = (function makeBird() {
-
-  let state = {
+const bird = (() => {
+  const state = {
     radius: 30,
     posX: 30 + 40,
     posY: 30 + 200,
     color: "#f00",
-    shouldJump: false
+    shouldJump: false,
   };
 
   const publicAPI = {
@@ -13,7 +12,7 @@ const bird = (function makeBird() {
     jump,
     nextFrame,
     draw,
-    reset
+    reset,
   };
 
   return publicAPI;
@@ -38,8 +37,11 @@ const bird = (function makeBird() {
     ctx.fillStyle = state.color;
     ctx.beginPath();
     ctx.arc(
-      state.posX, state.posY,
-      state.radius, 0, 2*Math.PI
+      state.posX,
+      state.posY,
+      state.radius,
+      0,
+      2 * Math.PI,
     );
     ctx.fill();
   }
@@ -47,7 +49,6 @@ const bird = (function makeBird() {
   function reset() {
     state.posY = 30 + 300;
   }
-
 })();
 
-export { bird };
+export default bird;

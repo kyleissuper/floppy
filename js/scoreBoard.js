@@ -1,19 +1,18 @@
-const scoreBoard = (function scoreMaker() {
-
-  let state = {
+const scoreBoard = (() => {
+  const state = {
     font: "Bold 30px Arial",
     color: "#fff",
     counter: 0,
-    max: 0
+    max: 0,
   };
 
-  const localStorage = window.localStorage;
+  const { localStorage } = window;
 
   const publicAPI = {
     nextFrame,
     draw,
     reset,
-    state
+    state,
   };
 
   return publicAPI;
@@ -34,15 +33,14 @@ const scoreBoard = (function scoreMaker() {
   }
 
   function reset() {
-    let max = Math.max(
+    const max = Math.max(
       localStorage.getItem("maxScore"),
-      state.max
+      state.max,
     );
     localStorage.setItem("maxScore", max);
     state.max = max;
     state.counter = 0;
   }
-
 })();
 
-export { scoreBoard };
+export default scoreBoard;

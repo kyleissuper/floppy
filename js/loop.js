@@ -1,15 +1,15 @@
-const loop = (function makeLoop() {
-
-  let nextFrame, renderWithLag;
-  let state = {
+const loop = (() => {
+  let nextFrame;
+  let renderWithLag;
+  const state = {
     lastTick: Date.now(),
     lag: 0,
     /* Assume 60 fps */
-    frameDuration: 1000 / 60
+    frameDuration: 1000 / 60,
   };
 
   const publicAPI = {
-    start
+    start,
   };
 
   return publicAPI;
@@ -26,7 +26,7 @@ const loop = (function makeLoop() {
   function next() {
     window.requestAnimationFrame(next);
 
-    let now = Date.now();
+    const now = Date.now();
     state.lag += now - state.lastTick;
     state.lastTick = now;
 
@@ -36,7 +36,6 @@ const loop = (function makeLoop() {
     }
     renderWithLag(state.lag / state.frameDuration);
   }
-
 })();
 
-export { loop };
+export default loop;

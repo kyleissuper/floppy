@@ -19,7 +19,7 @@ const physics = (function makePhysics(){
   // ****************************************
 
   function currentFallSpeed() {
-    return fallSpeed
+    return fallSpeed;
   }
 
   function fall() {

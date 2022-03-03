@@ -12,7 +12,8 @@ const scoreBoard = (function scoreMaker() {
   const publicAPI = {
     nextFrame,
     draw,
-    reset
+    reset,
+    state
   };
 
   return publicAPI;
@@ -20,12 +21,13 @@ const scoreBoard = (function scoreMaker() {
   // ****************************************
 
   function nextFrame() {
-    state.counter += 0.04;
+    state.counter += 0.015;
     state.max = Math.max(state.counter, state.max);
   }
 
   function draw(ctx, lagPercent) {
     ctx.font = state.font;
+    ctx.fillStyle = state.color;
     ctx.textAlign = "center";
     ctx.fillText(Math.floor(state.counter), 200, 50);
     ctx.fillText(Math.floor(state.max), 200, 100);

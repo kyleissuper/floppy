@@ -8,6 +8,5 @@ import { scoreBoard } from "./scoreBoard.js";
 
 document.addEventListener("DOMContentLoaded", function loadGame() {
   flappy.setup(physics, bird, obstacleMaker, scoreBoard);
-  flappy.newGame();
   loop.start(flappy.nextFrame, flappy.renderWithLag);
 });

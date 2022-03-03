@@ -10,15 +10,16 @@ bird	bird.js	/^const bird = (function makeBird() {$/;"	f
 click	flappy.js	/^  function click(evt) {$/;"	f	function:flappy
 color	bird.js	/^    color: "#f00",$/;"	p	class:bird.state
 color	scoreBoard.js	/^    color: "#fff",$/;"	p	class:scoreBoard.state
-counter	scoreBoard.js	/^    counter: 0$/;"	p	class:scoreBoard.state
+counter	scoreBoard.js	/^    counter: 0,$/;"	p	class:scoreBoard.state
 currentFallSpeed	physics.js	/^  function currentFallSpeed() {$/;"	f	function:physics
 didBirdHitBox	physics.js	/^  function didBirdHitBox(birdState, box) {$/;"	f	function:physics
 draw	bird.js	/^  function draw(ctx, lagPercent) {$/;"	f	function:bird
 draw	obstacleMaker.js	/^  function draw(ctx, lagPercent) {$/;"	f	function:obstacleMaker
 draw	scoreBoard.js	/^  function draw(ctx, lagPercent) {$/;"	f	function:scoreBoard
+end	flappy.js	/^  function end() {$/;"	f	function:flappy
 fall	physics.js	/^  function fall() {$/;"	f	function:physics
 flappy	flappy.js	/^const flappy = (function makeFlappy(){$/;"	f
-font	scoreBoard.js	/^    font: "20px Arial",$/;"	p	class:scoreBoard.state
+font	scoreBoard.js	/^    font: "Bold 30px Arial",$/;"	p	class:scoreBoard.state
 frameDuration	loop.js	/^    frameDuration: 1000 \/ 60$/;"	p	class:loop.state
 getBoxes	obstacleMaker.js	/^  function getBoxes() {$/;"	f	function:obstacleMaker
 jump	bird.js	/^  function jump() {$/;"	f	function:bird
@@ -32,6 +33,7 @@ makeBird	bird.js	/^const bird = (function makeBird() {$/;"	f
 makeFlappy	flappy.js	/^const flappy = (function makeFlappy(){$/;"	f
 makeLoop	loop.js	/^const loop = (function makeLoop() {$/;"	f
 makePhysics	physics.js	/^const physics = (function makePhysics(){$/;"	f
+max	scoreBoard.js	/^    max: 0$/;"	p	class:scoreBoard.state
 newGame	flappy.js	/^  function newGame() {$/;"	f	function:flappy
 next	loop.js	/^  function next() {$/;"	f	function:loop
 nextFrame	bird.js	/^  function nextFrame(physics) {$/;"	f	function:bird
@@ -52,6 +54,7 @@ scoreBoard	scoreBoard.js	/^const scoreBoard = (function scoreMaker() {$/;"	f
 scoreMaker	scoreBoard.js	/^const scoreBoard = (function scoreMaker() {$/;"	f
 setup	flappy.js	/^  function setup(physicsEngine, birdObject, obstacleMaker, scoreBoard) {$/;"	f	function:flappy
 shouldJump	bird.js	/^    shouldJump: false$/;"	p	class:bird.state
+showSplash	flappy.js	/^  function showSplash() {$/;"	f	function:flappy
 start	loop.js	/^  function start(gameNextFrame, gameRenderWithLag) {$/;"	f	function:loop
 state	bird.js	/^  let state = {$/;"	c	class:bird
 state	loop.js	/^  let state = {$/;"	c	class:loop

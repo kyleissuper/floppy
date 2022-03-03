@@ -1,5 +1,5 @@
 const flappy = (() => {
-  let hitBoxes;
+  let boundaries;
   let physics;
   let bird;
   let canvas;
@@ -47,19 +47,20 @@ const flappy = (() => {
   }
 
   function newGame() {
+    isPlaying = false;
     physics.reset();
     bird.reset();
     obstacles.reset();
     score.reset();
     // Two static boxes to detect out of bounds
-    hitBoxes = [];
-    hitBoxes.push({
+    boundaries = [];
+    boundaries.push({
       posX: 0,
       posY: canvas.height,
       width: canvas.width,
       height: canvas.height,
     });
-    hitBoxes.push({
+    boundaries.push({
       posX: 0,
       posY: -(canvas.height),
       width: canvas.width,
@@ -84,16 +85,12 @@ const flappy = (() => {
     score.nextFrame();
     bird.nextFrame(physics);
     obstacles.nextFrame(physics);
-    for (let i = 0; i < hitBoxes.length; i += 1) {
-      if (physics.didBirdHitBox(bird.state, hitBoxes[i])) {
-        end();
-      }
+    for (let i = 0; i < boundaries.length; i += 1) {
+      if (bird.didHitBox(boundaries[i])) newGame();
     }
     const obstacleBoxes = obstacles.getBoxes();
     for (let i = 0; i < obstacleBoxes.length; i += 1) {
-      if (physics.didBirdHitBox(bird.state, obstacleBoxes[i])) {
-        end();
-      }
+      if (bird.didHitBox(obstacleBoxes[i])) newGame();
     }
   }
 
@@ -117,11 +114,6 @@ const flappy = (() => {
   function click() {
     isPlaying = true;
     bird.jump();
-  }
-
-  function end() {
-    isPlaying = false;
-    newGame();
   }
 })();
 

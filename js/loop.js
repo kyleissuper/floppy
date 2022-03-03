@@ -20,11 +20,11 @@ const loop = (() => {
     nextFrame = gameNextFrame;
     renderWithLag = gameRenderWithLag;
     state.lastTick = Date.now();
-    next();
+    tick();
   }
 
-  function next() {
-    window.requestAnimationFrame(next);
+  function tick() {
+    window.requestAnimationFrame(tick);
 
     const now = Date.now();
     state.lag += now - state.lastTick;

@@ -1,15 +1,17 @@
 const physics = (function makePhysics(){
 
-  let defaultFallSpeed = -15;
+  let defaultFallSpeed = -17;
+  let scrollSpeed = -5;
   let fallSpeed = defaultFallSpeed;
-  let fallGravity = 0.8;
+  let fallGravity = 1.3;
 
   const publicAPI = {
     fall,
     jump,
     didBirdHitBox,
     reset,
-    currentFallSpeed
+    currentFallSpeed,
+    scrollSpeed
   };
 
   return publicAPI;

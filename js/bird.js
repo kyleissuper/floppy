@@ -35,17 +35,17 @@ const bird = (function makeBird() {
   }
 
   function draw(ctx, lagPercent) {
-    ctx.fillStyle = bird.state.color;
+    ctx.fillStyle = state.color;
     ctx.beginPath();
     ctx.arc(
-      bird.state.posX, bird.state.posY,
-      bird.state.radius, 0, 2*Math.PI
+      state.posX, state.posY,
+      state.radius, 0, 2*Math.PI
     );
     ctx.fill();
   }
 
   function reset() {
-    bird.state.posY = 30 + 200;
+    state.posY = 30 + 300;
   }
 
 })();

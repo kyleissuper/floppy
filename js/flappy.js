@@ -1,6 +1,6 @@
 const flappy = (function makeFlappy(){
 
-  let hitBoxes, physics, bird, canvas, ctx;
+  let hitBoxes, physics, bird, canvas, ctx, obstacles;
 
   const publicAPI = {
     setup,
@@ -13,9 +13,10 @@ const flappy = (function makeFlappy(){
 
   // ******************************************
 
-  function setup(physicsEngine, birdObject) {
+  function setup(physicsEngine, birdObject, obstacleMaker) {
     physics = physicsEngine;
     bird = birdObject;
+    obstacles = obstacleMaker;
     canvas = document.querySelector("#game");
     ctx = canvas.getContext("2d");
     canvas.addEventListener("click", click);
@@ -25,6 +26,7 @@ const flappy = (function makeFlappy(){
   function newGame() {
     physics.reset();
     bird.reset();
+    obstacles.setup();
     // Two static boxes to detect out of bounds
     hitBoxes = [];
     hitBoxes.push({
@@ -43,8 +45,15 @@ const flappy = (function makeFlappy(){
 
   function nextFrame() {
     bird.nextFrame(physics);
+    obstacles.nextFrame(physics);
     for (let i=0; i<hitBoxes.length; i++) {
       if (physics.didBirdHitBox(bird.state, hitBoxes[i])) {
+        newGame();
+      }
+    }
+    let obstacleBoxes = obstacles.getBoxes();
+    for (let i=0; i<obstacleBoxes.length; i++) {
+      if (physics.didBirdHitBox(bird.state, obstacleBoxes[i])) {
         newGame();
       }
     }
@@ -53,6 +62,7 @@ const flappy = (function makeFlappy(){
   function renderWithLag(lagPercent) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     bird.draw(ctx, lagPercent);
+    obstacles.draw(ctx, lagPercent);
   }
 
   function keyPress(evt) {

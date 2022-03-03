@@ -5,15 +5,18 @@
 !_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
 !_TAG_PROGRAM_URL	https://ctags.io/	/official site/
 !_TAG_PROGRAM_VERSION	0.0.0	//
+addObstaclePair	obstacleMaker.js	/^  function addObstaclePair(posX, yGap) {$/;"	f	function:obstacleMaker
 bird	bird.js	/^const bird = (function makeBird() {$/;"	f
 click	flappy.js	/^  function click(evt) {$/;"	f	function:flappy
 color	bird.js	/^    color: "#f00",$/;"	p	class:bird.state
 currentFallSpeed	physics.js	/^  function currentFallSpeed() {$/;"	f	function:physics
 didBirdHitBox	physics.js	/^  function didBirdHitBox(birdState, box) {$/;"	f	function:physics
 draw	bird.js	/^  function draw(ctx, lagPercent) {$/;"	f	function:bird
+draw	obstacleMaker.js	/^  function draw(ctx, lagPercent) {$/;"	f	function:obstacleMaker
 fall	physics.js	/^  function fall() {$/;"	f	function:physics
 flappy	flappy.js	/^const flappy = (function makeFlappy(){$/;"	f
 frameDuration	loop.js	/^    frameDuration: 1000 \/ 60$/;"	p	class:loop.state
+getBoxes	obstacleMaker.js	/^  function getBoxes() {$/;"	f	function:obstacleMaker
 jump	bird.js	/^  function jump() {$/;"	f	function:bird
 jump	physics.js	/^  function jump() {$/;"	f	function:physics
 keyPress	flappy.js	/^  function keyPress(evt) {$/;"	f	function:flappy
@@ -29,6 +32,8 @@ newGame	flappy.js	/^  function newGame() {$/;"	f	function:flappy
 next	loop.js	/^  function next() {$/;"	f	function:loop
 nextFrame	bird.js	/^  function nextFrame(physics) {$/;"	f	function:bird
 nextFrame	flappy.js	/^  function nextFrame() {$/;"	f	function:flappy
+nextFrame	obstacleMaker.js	/^  function nextFrame(physics) {$/;"	f	function:obstacleMaker
+obstacleMaker	obstacleMaker.js	/^const obstacleMaker = (function obstacleMaker() {$/;"	f
 physics	physics.js	/^const physics = (function makePhysics(){$/;"	f
 posX	bird.js	/^    posX: 30 + 40,$/;"	p	class:bird.state
 posY	bird.js	/^    posY: 30 + 200,$/;"	p	class:bird.state
@@ -36,7 +41,8 @@ radius	bird.js	/^    radius: 30,$/;"	p	class:bird.state
 renderWithLag	flappy.js	/^  function renderWithLag(lagPercent) {$/;"	f	function:flappy
 reset	bird.js	/^  function reset() {$/;"	f	function:bird
 reset	physics.js	/^  function reset() {$/;"	f	function:physics
-setup	flappy.js	/^  function setup(physicsEngine, birdObject) {$/;"	f	function:flappy
+setup	flappy.js	/^  function setup(physicsEngine, birdObject, obstacleMaker) {$/;"	f	function:flappy
+setup	obstacleMaker.js	/^  function setup() {$/;"	f	function:obstacleMaker
 shouldJump	bird.js	/^    shouldJump: false$/;"	p	class:bird.state
 start	loop.js	/^  function start(gameNextFrame, gameRenderWithLag) {$/;"	f	function:loop
 state	bird.js	/^  let state = {$/;"	c	class:bird

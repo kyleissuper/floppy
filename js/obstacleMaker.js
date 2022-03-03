@@ -9,7 +9,7 @@ const obstacleMaker = (function obstacleMaker() {
   const color = "#f00";
 
   const publicAPI = {
-    setup,
+    reset,
     nextFrame,
     draw,
     getBoxes
@@ -23,8 +23,7 @@ const obstacleMaker = (function obstacleMaker() {
     return obstacles;
   }
 
-  function setup() {
-    // Create N obstacles
+  function reset() {
     obstacles = [];
     let lastX;
     addObstaclePair(600, yGap);
@@ -35,9 +34,6 @@ const obstacleMaker = (function obstacleMaker() {
   }
 
   function nextFrame(physics) {
-    // Loop through obstacles
-    // Move using physics.scrollSpeed
-    // Pop if out of bounds, then add new
     for (let i=0; i<obstacles.length; i++) {
       obstacles[i].posX += physics.scrollSpeed;
     }

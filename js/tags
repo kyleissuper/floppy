@@ -5,57 +5,9 @@
 !_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
 !_TAG_PROGRAM_URL	https://ctags.io/	/official site/
 !_TAG_PROGRAM_VERSION	0.0.0	//
-addObstaclePair	obstacleMaker.js	/^  function addObstaclePair(posX, yGap) {$/;"	f	function:obstacleMaker
-bird	bird.js	/^const bird = (function makeBird() {$/;"	f
-click	flappy.js	/^  function click(evt) {$/;"	f	function:flappy
-color	bird.js	/^    color: "#f00",$/;"	p	class:bird.state
-color	scoreBoard.js	/^    color: "#fff",$/;"	p	class:scoreBoard.state
-counter	scoreBoard.js	/^    counter: 0,$/;"	p	class:scoreBoard.state
-currentFallSpeed	physics.js	/^  function currentFallSpeed() {$/;"	f	function:physics
-didBirdHitBox	physics.js	/^  function didBirdHitBox(birdState, box) {$/;"	f	function:physics
-draw	bird.js	/^  function draw(ctx, lagPercent) {$/;"	f	function:bird
-draw	obstacleMaker.js	/^  function draw(ctx, lagPercent) {$/;"	f	function:obstacleMaker
-draw	scoreBoard.js	/^  function draw(ctx, lagPercent) {$/;"	f	function:scoreBoard
-end	flappy.js	/^  function end() {$/;"	f	function:flappy
-fall	physics.js	/^  function fall() {$/;"	f	function:physics
-flappy	flappy.js	/^const flappy = (function makeFlappy(){$/;"	f
-font	scoreBoard.js	/^    font: "Bold 30px Arial",$/;"	p	class:scoreBoard.state
-frameDuration	loop.js	/^    frameDuration: 1000 \/ 60$/;"	p	class:loop.state
-getBoxes	obstacleMaker.js	/^  function getBoxes() {$/;"	f	function:obstacleMaker
-jump	bird.js	/^  function jump() {$/;"	f	function:bird
-jump	physics.js	/^  function jump() {$/;"	f	function:physics
-keyPress	flappy.js	/^  function keyPress(evt) {$/;"	f	function:flappy
-lag	loop.js	/^    lag: 0,$/;"	p	class:loop.state
-lastTick	loop.js	/^    lastTick: Date.now(),$/;"	p	class:loop.state
-loadGame	main.js	/^document.addEventListener("DOMContentLoaded", function loadGame() {$/;"	f
-loop	loop.js	/^const loop = (function makeLoop() {$/;"	f
-makeBird	bird.js	/^const bird = (function makeBird() {$/;"	f
-makeFlappy	flappy.js	/^const flappy = (function makeFlappy(){$/;"	f
-makeLoop	loop.js	/^const loop = (function makeLoop() {$/;"	f
-makePhysics	physics.js	/^const physics = (function makePhysics(){$/;"	f
-max	scoreBoard.js	/^    max: 0$/;"	p	class:scoreBoard.state
-newGame	flappy.js	/^  function newGame() {$/;"	f	function:flappy
-next	loop.js	/^  function next() {$/;"	f	function:loop
-nextFrame	bird.js	/^  function nextFrame(physics) {$/;"	f	function:bird
-nextFrame	flappy.js	/^  function nextFrame() {$/;"	f	function:flappy
-nextFrame	obstacleMaker.js	/^  function nextFrame(physics) {$/;"	f	function:obstacleMaker
-nextFrame	scoreBoard.js	/^  function nextFrame() {$/;"	f	function:scoreBoard
-obstacleMaker	obstacleMaker.js	/^const obstacleMaker = (function obstacleMaker() {$/;"	f
-physics	physics.js	/^const physics = (function makePhysics(){$/;"	f
-posX	bird.js	/^    posX: 30 + 40,$/;"	p	class:bird.state
-posY	bird.js	/^    posY: 30 + 200,$/;"	p	class:bird.state
-radius	bird.js	/^    radius: 30,$/;"	p	class:bird.state
-renderWithLag	flappy.js	/^  function renderWithLag(lagPercent) {$/;"	f	function:flappy
-reset	bird.js	/^  function reset() {$/;"	f	function:bird
-reset	obstacleMaker.js	/^  function reset() {$/;"	f	function:obstacleMaker
-reset	physics.js	/^  function reset() {$/;"	f	function:physics
-reset	scoreBoard.js	/^  function reset() {$/;"	f	function:scoreBoard
-scoreBoard	scoreBoard.js	/^const scoreBoard = (function scoreMaker() {$/;"	f
-scoreMaker	scoreBoard.js	/^const scoreBoard = (function scoreMaker() {$/;"	f
-setup	flappy.js	/^  function setup(physicsEngine, birdObject, obstacleMaker, scoreBoard) {$/;"	f	function:flappy
-shouldJump	bird.js	/^    shouldJump: false$/;"	p	class:bird.state
-showSplash	flappy.js	/^  function showSplash() {$/;"	f	function:flappy
-start	loop.js	/^  function start(gameNextFrame, gameRenderWithLag) {$/;"	f	function:loop
-state	bird.js	/^  let state = {$/;"	c	class:bird
-state	loop.js	/^  let state = {$/;"	c	class:loop
-state	scoreBoard.js	/^  let state = {$/;"	c	class:scoreBoard
+bird	bird.js	/^const bird = (() => {$/;"	C
+flappy	flappy.js	/^const flappy = (() => {$/;"	C
+loop	loop.js	/^const loop = (() => {$/;"	C
+obstacleMaker	obstacleMaker.js	/^const obstacleMaker = (() => {$/;"	C
+physics	physics.js	/^const physics = (() => {$/;"	C
+scoreBoard	scoreBoard.js	/^const scoreBoard = (() => {$/;"	C

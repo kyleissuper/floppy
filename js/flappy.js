@@ -22,7 +22,7 @@ const flappy = (function makeFlappy(){
     score = scoreBoard;
     canvas = document.querySelector("#game");
     ctx = canvas.getContext("2d");
-    canvas.addEventListener("click", click);
+    canvas.addEventListener("touchstart", click);
     window.addEventListener("keypress", keyPress);
     newGame();
   }
@@ -54,7 +54,7 @@ const flappy = (function makeFlappy(){
     ctx.fillStyle = "#fff";
     ctx.font = "Bold 25px Arial";
     ctx.textAlign = "center";
-    ctx.fillText("Click, Tap, or Use Spacebar", 200, 200);
+    ctx.fillText("Tap Screen or Spacebar", 200, 200);
     ctx.fillText("Max Score: " + Math.floor(score.state.max), 200, 270);
   }
 

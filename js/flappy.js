@@ -27,9 +27,23 @@ const flappy = (() => {
     score = scoreBoard;
     canvas = document.querySelector("#game");
     ctx = canvas.getContext("2d");
+    rescaleCanvas();
     canvas.addEventListener("touchstart", click);
     window.addEventListener("keypress", keyPress);
     newGame();
+  }
+
+  function rescaleCanvas() {
+    const base = {
+      w: 400,
+      h: 600,
+    };
+    const deviceScale = window.devicePixelRatio;
+    canvas.style.width = `${base.w}px`;
+    canvas.style.height = `${base.h}px`;
+    canvas.width = Math.floor(base.w * deviceScale);
+    canvas.height = Math.floor(base.h * deviceScale);
+    ctx.scale(deviceScale, deviceScale);
   }
 
   function newGame() {

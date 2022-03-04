@@ -1,7 +1,7 @@
 const scoreBoard = (() => {
   const state = {
     font: "Bold 30px Arial",
-    color: "#fff",
+    color: "#000",
     counter: 0,
     max: 0,
   };

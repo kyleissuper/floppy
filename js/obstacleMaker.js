@@ -46,6 +46,7 @@ const obstacleMaker = (() => {
   function draw(ctx, lagPercent) {
     for (let i = 0; i < obstacles.length; i += 1) {
       ctx.fillStyle = color;
+      ctx.beginPath();
       ctx.rect(
         obstacles[i].posX,
         obstacles[i].posY,

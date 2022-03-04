@@ -1,10 +1,15 @@
 const bird = (() => {
+  const sprite = loadSprite();
+  const scale = window.devicePixelRatio * 4;
+
   const state = {
     radius: 30,
     posX: 30 + 40,
     posY: 30 + 200,
-    color: "#f00",
+    rotate: 0,
+    spriteNum: 3,
     shouldJump: false,
+    jumpState: 60,
   };
 
   const publicAPI = {
@@ -20,22 +25,77 @@ const bird = (() => {
 
   // ****************************************
 
+  function loadSprite() {
+    const s = new Image();
+    s.onload = () => {
+      s.frameWidth = s.width;
+      s.frameHeight = s.height / 4;
+    };
+    s.src = "../img/kitty.svg";
+    return s;
+  }
+
   function jump() {
     state.shouldJump = true;
+    state.jumpState = 0;
   }
 
   function nextFrame(physics) {
     if (state.shouldJump === true) {
       physics.jump();
       state.shouldJump = false;
+      state.rotate = 0;
     } else {
       physics.fall();
+      state.rotate += 3.5;
+      state.rotate = Math.min(150, state.rotate);
     }
+    animate();
     state.posY += physics.currentFallSpeed();
   }
 
+  function animate() {
+    state.jumpState += 1;
+    if (state.jumpState < 5) {
+      state.spriteNum = 0;
+    } else if (state.jumpState < 13) {
+      state.spriteNum = 1;
+    } else if (state.jumpState < 17) {
+      state.spriteNum = 2;
+    } else {
+      state.spriteNum = 3;
+    }
+  }
+
   function draw(ctx, lagPercent) {
-    ctx.fillStyle = state.color;
+    // drawCircle(ctx, lagPercent);
+    ctx.save();
+    const kittyRadius = state.radius * 1.7;
+    const x = state.posX - kittyRadius;
+    const y = state.posY - kittyRadius;
+    const w = kittyRadius * 2;
+    const h = kittyRadius * 2;
+    const TO_RADIANS = Math.PI / 180;
+    ctx.translate(x, y);
+    ctx.translate(w / 2, h / 2);
+    ctx.rotate((state.rotate + 30) * TO_RADIANS);
+    ctx.drawImage(
+      sprite,
+      0, // clip from x
+      state.spriteNum * sprite.frameHeight * scale, // clip from y
+      sprite.width * scale, // clip by width
+      sprite.frameHeight * scale, // clip by height
+      -w / 2, // x
+      -h / 2, // y
+      w, // width
+      h, // height
+    );
+    ctx.restore();
+  }
+
+  function drawCircle(ctx, lagPercent) {
+    /* Primarily for testing purposes */
+    ctx.fillStyle = "#F00";
     ctx.beginPath();
     ctx.arc(
       state.posX,

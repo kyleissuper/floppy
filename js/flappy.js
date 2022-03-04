@@ -71,7 +71,7 @@ const flappy = (() => {
 
   function showSplash() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "#fff";
+    ctx.fillStyle = "#000";
     ctx.font = "Bold 25px Arial";
     ctx.textAlign = "center";
     ctx.fillText("Tap Screen or Spacebar", 200, 200);

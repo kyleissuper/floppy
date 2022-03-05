@@ -1,16 +1,17 @@
 const bird = (() => {
-  const sprite = loadSprite();
-  const scale = window.devicePixelRatio * 4;
-
   const state = {
     radius: 30,
-    posX: 30 + 40,
+    posX: 30 + 60,
     posY: 30 + 200,
     rotate: 0,
     spriteNum: 3,
     shouldJump: false,
     jumpState: 60,
   };
+
+  const sprite = loadSprite();
+  const scale = window.devicePixelRatio * 4;
+  const kittyRadius = state.radius * 1.7;
 
   const publicAPI = {
     state,
@@ -70,7 +71,6 @@ const bird = (() => {
   function draw(ctx, lagPercent) {
     // drawCircle(ctx, lagPercent);
     ctx.save();
-    const kittyRadius = state.radius * 1.7;
     const x = state.posX - kittyRadius;
     const y = state.posY - kittyRadius;
     const w = kittyRadius * 2;

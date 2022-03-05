@@ -1,11 +1,15 @@
 const obstacleMaker = (() => {
   let obstacles;
+  let lampImage;
+  let stoolImage;
   const width = 70;
   const height = 600;
   const xGap = 190;
   const yGap = 230;
   const maxPairs = 5;
   const color = "#f00";
+
+  loadImages();
 
   const publicAPI = {
     reset,
@@ -17,6 +21,38 @@ const obstacleMaker = (() => {
   return publicAPI;
 
   // ****************************************
+
+  function loadImages() {
+    lampImage = new Image();
+    lampImage.src = "../img/lamp.svg";
+    stoolImage = new Image();
+    stoolImage.src = "../img/stool.svg";
+  }
+
+  function draw(ctx, lagPercent) {
+    for (let i = 0; i < obstacles.length; i += 1) {
+      // drawBox(ctx, lagPercent, obstacles[i]);
+      if (i % 2 === 0) {
+        // Lamp
+        ctx.drawImage(
+          lampImage,
+          obstacles[i].posX,
+          obstacles[i].posY + 10,
+          width,
+          height,
+        );
+      } else {
+        // Stool
+        ctx.drawImage(
+          stoolImage,
+          obstacles[i].posX - 10,
+          obstacles[i].posY - 5,
+          width * 1.3,
+          height * 1.3,
+        );
+      }
+    }
+  }
 
   function getBoxes() {
     return obstacles;
@@ -43,18 +79,17 @@ const obstacleMaker = (() => {
     }
   }
 
-  function draw(ctx, lagPercent) {
-    for (let i = 0; i < obstacles.length; i += 1) {
-      ctx.fillStyle = color;
-      ctx.beginPath();
-      ctx.rect(
-        obstacles[i].posX,
-        obstacles[i].posY,
-        width,
-        height,
-      );
-      ctx.fill();
-    }
+  function drawBox(ctx, lagPercent, box) {
+    /* Primarily for testing purposes */
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.rect(
+      box.posX,
+      box.posY,
+      width,
+      height,
+    );
+    ctx.fill();
   }
 
   function addObstaclePair(posX) {

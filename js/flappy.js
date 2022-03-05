@@ -6,6 +6,7 @@ const flappy = (() => {
   let ctx;
   let obstacles;
   let score;
+  let backDrop;
   let isPlaying = false;
 
   const publicAPI = {
@@ -20,11 +21,12 @@ const flappy = (() => {
 
   // ******************************************
 
-  function setup(physicsEngine, birdObject, obstacleMaker, scoreBoard) {
+  function setup(physicsEngine, birdObject, obstacleMaker, scoreBoard, backDropMaker) {
     physics = physicsEngine;
     bird = birdObject;
     obstacles = obstacleMaker;
     score = scoreBoard;
+    backDrop = backDropMaker;
     canvas = document.querySelector("#game");
     ctx = canvas.getContext("2d");
     rescaleCanvas();
@@ -83,6 +85,7 @@ const flappy = (() => {
       return;
     }
     score.nextFrame();
+    backDrop.nextFrame();
     bird.nextFrame(physics);
     obstacles.nextFrame(physics);
     for (let i = 0; i < boundaries.length; i += 1) {
@@ -99,8 +102,9 @@ const flappy = (() => {
       return;
     }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    bird.draw(ctx, lagPercent);
+    backDrop.draw(ctx, lagPercent);
     obstacles.draw(ctx, lagPercent);
+    bird.draw(ctx, lagPercent);
     score.draw(ctx, lagPercent);
   }
 

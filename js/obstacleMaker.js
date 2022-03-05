@@ -4,8 +4,8 @@ const obstacleMaker = (() => {
   let stoolImage;
   const width = 70;
   const height = 600;
-  const xGap = 190;
-  const yGap = 230;
+  const xGap = 200;
+  const yGap = 240;
   const maxPairs = 5;
   const color = "#f00";
 

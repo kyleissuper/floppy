@@ -32,7 +32,7 @@ const bird = (() => {
       s.frameWidth = s.width;
       s.frameHeight = s.height / 4;
     };
-    s.src = "../img/kitty.svg";
+    s.src = "img/kitty.svg";
     return s;
   }
 

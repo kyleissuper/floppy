@@ -1,9 +1,10 @@
 const backDrop = (() => {
   const width = 2760;
   const height = 600;
+  let scroll = 0;
+
   const image = new Image();
   image.src = "img/background.svg";
-  let scroll = 0;
 
   const publicAPI = {
     nextFrame,

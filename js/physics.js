@@ -5,19 +5,23 @@ const physics = (() => {
   let fallSpeed = defaultFallSpeed;
 
   const publicAPI = {
+    scrollSpeed,
+    getCurrentFallSpeed,
+    reset,
     fall,
     jump,
-    reset,
-    currentFallSpeed,
-    scrollSpeed,
   };
 
   return publicAPI;
 
   // ****************************************
 
-  function currentFallSpeed() {
+  function getCurrentFallSpeed() {
     return fallSpeed;
+  }
+
+  function reset() {
+    fallSpeed = defaultFallSpeed;
   }
 
   function fall() {
@@ -25,10 +29,6 @@ const physics = (() => {
   }
 
   function jump() {
-    fallSpeed = defaultFallSpeed;
-  }
-
-  function reset() {
     fallSpeed = defaultFallSpeed;
   }
 })();

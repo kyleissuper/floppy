@@ -1,12 +1,12 @@
 const loop = (() => {
-  let nextFrame;
-  let renderWithLag;
   const state = {
     lastTick: Date.now(),
     lag: 0,
     /* Assume 60 fps */
     frameDuration: 1000 / 60,
   };
+  let nextFrame;
+  let renderWithLag;
 
   const publicAPI = {
     start,

@@ -3,25 +3,35 @@ const scoreBoard = (() => {
     font: "Bold 30px Arial",
     color: "#2A2C2B",
     counter: 0,
-    max: 0,
+    maxScore: 0,
   };
 
   const { localStorage } = window;
 
   const publicAPI = {
+    state,
+    reset,
     nextFrame,
     draw,
-    reset,
-    state,
   };
 
   return publicAPI;
 
   // ****************************************
 
+  function reset() {
+    const maxScore = Math.max(
+      localStorage.getItem("maxScore"),
+      state.maxScore,
+    );
+    localStorage.setItem("maxScore", maxScore);
+    state.maxScore = maxScore;
+    state.counter = 0;
+  }
+
   function nextFrame() {
     state.counter += 0.015;
-    state.max = Math.max(state.counter, state.max);
+    state.maxScore = Math.max(state.counter, state.maxScore);
   }
 
   function draw(ctx, lagPercent) {
@@ -29,17 +39,7 @@ const scoreBoard = (() => {
     ctx.fillStyle = state.color;
     ctx.textAlign = "center";
     ctx.fillText(Math.floor(state.counter), 200, 50);
-    ctx.fillText(Math.floor(state.max), 200, 100);
-  }
-
-  function reset() {
-    const max = Math.max(
-      localStorage.getItem("maxScore"),
-      state.max,
-    );
-    localStorage.setItem("maxScore", max);
-    state.max = max;
-    state.counter = 0;
+    ctx.fillText(Math.floor(state.maxScore), 200, 100);
   }
 })();
 

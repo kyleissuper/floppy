@@ -1,16 +1,17 @@
-const bird = (() => {
+const kitty = (() => {
   const state = {
     radius: 30,
     posX: 30 + 60,
     posY: 30 + 200,
-    rotate: 0,
+    rotation: 0,
     spriteNum: 3,
+    animFrame: 60,
     shouldJump: false,
-    jumpState: 60,
   };
 
   const sprite = loadSprite();
   const scale = window.devicePixelRatio * 4;
+  const toRadians = Math.PI / 180;
   const kittyRadius = state.radius * 1.7;
 
   const publicAPI = {
@@ -26,42 +27,32 @@ const bird = (() => {
 
   // ****************************************
 
-  function loadSprite() {
-    const s = new Image();
-    s.onload = () => {
-      s.frameWidth = s.width;
-      s.frameHeight = s.height / 4;
-    };
-    s.src = "img/kitty.svg";
-    return s;
-  }
-
   function jump() {
     state.shouldJump = true;
-    state.jumpState = 0;
+    state.animFrame = 0;
   }
 
   function nextFrame(physics) {
     if (state.shouldJump === true) {
       physics.jump();
       state.shouldJump = false;
-      state.rotate = 0;
+      state.rotation = 0;
     } else {
       physics.fall();
-      state.rotate += 3.5;
-      state.rotate = Math.min(150, state.rotate);
+      state.rotation += 3.5;
+      state.rotation = Math.min(150, state.rotation);
     }
-    animate();
-    state.posY += physics.currentFallSpeed();
+    setSprite();
+    state.posY += physics.getCurrentFallSpeed();
   }
 
-  function animate() {
-    state.jumpState += 1;
-    if (state.jumpState < 5) {
+  function setSprite() {
+    state.animFrame += 1;
+    if (state.animFrame < 5) {
       state.spriteNum = 0;
-    } else if (state.jumpState < 13) {
+    } else if (state.animFrame < 13) {
       state.spriteNum = 1;
-    } else if (state.jumpState < 17) {
+    } else if (state.animFrame < 17) {
       state.spriteNum = 2;
     } else {
       state.spriteNum = 3;
@@ -69,32 +60,33 @@ const bird = (() => {
   }
 
   function draw(ctx, lagPercent) {
-    // drawCircle(ctx, lagPercent);
-    ctx.save();
     const x = state.posX - kittyRadius;
     const y = state.posY - kittyRadius;
     const w = kittyRadius * 2;
     const h = kittyRadius * 2;
-    const TO_RADIANS = Math.PI / 180;
+    // Translate and rotate ctx around kitty center
+    ctx.save();
     ctx.translate(x, y);
     ctx.translate(w / 2, h / 2);
-    ctx.rotate((state.rotate + 30) * TO_RADIANS);
+    ctx.rotate((state.rotation + 30) * toRadians);
     ctx.drawImage(
       sprite,
-      0, // clip from x
-      state.spriteNum * sprite.frameHeight * scale, // clip from y
-      sprite.width * scale, // clip by width
-      sprite.frameHeight * scale, // clip by height
-      -w / 2, // x
-      -h / 2, // y
-      w, // width
-      h, // height
+      /* Clip sprite from x and y, by width and height */
+      0,
+      state.spriteNum * sprite.frameHeight * scale,
+      sprite.width * scale,
+      sprite.frameHeight * scale,
+      /* Draw kitty at x and y, by width and height */
+      -w / 2,
+      -h / 2,
+      w,
+      h,
     );
     ctx.restore();
   }
 
   function drawCircle(ctx, lagPercent) {
-    /* Primarily for testing purposes */
+    /* Left here for testing purposes */
     ctx.fillStyle = "#F00";
     ctx.beginPath();
     ctx.arc(
@@ -108,11 +100,11 @@ const bird = (() => {
   }
 
   function reset() {
-    state.posY = 30 + 300;
+    state.posY = 30 + 200;
   }
 
   function didHitBox(box) {
-    // Collision detection between circle/bird and box
+    // Collision detection between circle and box
     // Adapted from https://stackoverflow.com/a/21096179
     const distX = Math.abs(state.posX - box.posX - box.width / 2);
     const distY = Math.abs(state.posY - box.posY - box.height / 2);
@@ -128,6 +120,16 @@ const bird = (() => {
     const dy = distY - box.height / 2;
     return (dx * dx + dy * dy <= (state.radius * state.radius));
   }
+
+  function loadSprite() {
+    const s = new Image();
+    s.onload = () => {
+      s.frameWidth = s.width;
+      s.frameHeight = s.height / 4;
+    };
+    s.src = "img/kitty.svg";
+    return s;
+  }
 })();
 
-export default bird;
+export default kitty;

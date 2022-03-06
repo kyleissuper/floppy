@@ -1,13 +1,12 @@
 const obstacleMaker = (() => {
-  let obstacles;
-  let lampImage;
-  let stoolImage;
   const width = 70;
   const height = 600;
   const xGap = 200;
   const yGap = 240;
-  const maxPairs = 5;
-  const color = "#f00";
+  const maxPairs = 3;
+  let obstacles;
+  let lampImage;
+  let stoolImage;
 
   loadImages();
 
@@ -22,16 +21,8 @@ const obstacleMaker = (() => {
 
   // ****************************************
 
-  function loadImages() {
-    lampImage = new Image();
-    lampImage.src = "img/lamp.svg";
-    stoolImage = new Image();
-    stoolImage.src = "img/stool.svg";
-  }
-
   function draw(ctx, lagPercent) {
     for (let i = 0; i < obstacles.length; i += 1) {
-      // drawBox(ctx, lagPercent, obstacles[i]);
       if (i % 2 === 0) {
         // Lamp
         ctx.drawImage(
@@ -60,10 +51,10 @@ const obstacleMaker = (() => {
 
   function reset() {
     obstacles = [];
-    addObstaclePair(600);
+    addObstaclePairAtX(600);
     while (obstacles.length < maxPairs * 2) {
       const lastX = obstacles[obstacles.length - 1].posX;
-      addObstaclePair(lastX + width + xGap);
+      addObstaclePairAtX(lastX + width + xGap);
     }
   }
 
@@ -73,15 +64,14 @@ const obstacleMaker = (() => {
     }
     while (obstacles[0].posX + width < 0) {
       const lastX = obstacles[obstacles.length - 1].posX;
-      addObstaclePair(lastX + width + xGap);
-      obstacles.shift();
-      obstacles.shift();
+      addObstaclePairAtX(lastX + width + xGap);
+      obstacles.splice(0, 2);
     }
   }
 
   function drawBox(ctx, lagPercent, box) {
     /* Primarily for testing purposes */
-    ctx.fillStyle = color;
+    ctx.fillStyle = "#F00";
     ctx.beginPath();
     ctx.rect(
       box.posX,
@@ -92,20 +82,26 @@ const obstacleMaker = (() => {
     ctx.fill();
   }
 
-  function addObstaclePair(posX) {
-    const posY = -height + Math.random() * (600 - yGap);
+  function addObstaclePairAtX(posX) {
+    const posY = -height + Math.random() * (height - yGap);
     obstacles.push({
       posX,
       posY,
       width,
       height,
-    });
-    obstacles.push({
+    }, {
       posX,
       posY: posY + height + yGap,
       width,
       height,
     });
+  }
+
+  function loadImages() {
+    lampImage = new Image();
+    lampImage.src = "img/lamp.svg";
+    stoolImage = new Image();
+    stoolImage.src = "img/stool.svg";
   }
 })();
 

@@ -41,16 +41,16 @@ const game = (() => {
   function showSplash() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = "#F8F0DF";
+    ctx.fillStyle = "#FFF";
     ctx.beginPath();
     ctx.rect(0, 0, canvas.width, canvas.height);
     ctx.fill();
 
-    ctx.fillStyle = "#2A2C2B";
+    ctx.fillStyle = "#5EAAA8";
     ctx.textAlign = "center";
-    ctx.font = "Bold 25px Arial";
-    ctx.fillText("Tap Screen or Spacebar", 200, 200);
-    ctx.fillText(`Max Score: ${Math.floor(score.state.maxScore)}`, 200, 270);
+    ctx.font = "Bold 30px 'Averia Serif Libre'";
+    ctx.fillText("Tap Screen or Spacebar", 200, 230);
+    ctx.fillText(`Max Score: ${Math.floor(score.state.maxScore)}`, 200, 300);
   }
 
   function newGame() {

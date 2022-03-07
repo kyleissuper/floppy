@@ -7,12 +7,14 @@ import scoreBoard from "./scoreBoard.js";
 import backDrop from "./backDrop.js";
 import "./webfont.js";
 
-WebFont.load({
-  google: {
-    families: ['Averia Serif Libre:700'],
-  },
-  active() {
-    game.setup(physics, kitty, obstacleMaker, scoreBoard, backDrop);
-    loop.start(game.nextFrame, game.renderWithLag);
-  },
+document.addEventListener("DOMContentLoaded", () => {
+  WebFont.load({
+    google: {
+      families: ['Averia Serif Libre:700'],
+    },
+    active() {
+      game.setup(physics, kitty, obstacleMaker, scoreBoard, backDrop);
+      loop.start(game.nextFrame, game.renderWithLag);
+    },
+  });
 });

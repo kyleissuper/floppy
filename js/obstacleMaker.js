@@ -1,8 +1,8 @@
 const obstacleMaker = (() => {
   const width = 70;
   const height = 600;
-  const xGap = 200;
-  const yGap = 240;
+  const xGap = 220;
+  const yGap = 260;
   const maxPairs = 3;
   let obstacles;
   let lampImage;

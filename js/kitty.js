@@ -12,7 +12,7 @@ const kitty = (() => {
   const sprite = loadSprite();
   const scale = window.devicePixelRatio * 4;
   const toRadians = Math.PI / 180;
-  const kittyRadius = state.radius * 1.7;
+  const kittyRadius = state.radius * 1.9;
 
   const publicAPI = {
     state,

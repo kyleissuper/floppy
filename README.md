@@ -4,4 +4,4 @@ Our grey and white cat, Pocky, tries to quickly hide when new guests come over. 
 
 See code by starting at `js/main.js`
 
-![Flappy Pocky Game Demo GIF](https://raw.githubusercontent.com/kyleissuper/flappy/master/img/demo.gif)
+<img src="https://raw.githubusercontent.com/kyleissuper/flappy/master/img/demo.gif" width="400" height="713">

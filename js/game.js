@@ -41,15 +41,38 @@ const game = (() => {
   function showSplash() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = "#FFF";
-    ctx.beginPath();
-    ctx.rect(0, 0, canvas.width, canvas.height);
-    ctx.fill();
+    backDrop.draw(ctx, 0);
 
-    ctx.fillStyle = "#5EAAA8";
+    const x = -80;
+    const y = 280;
+    const w = 400;
+    const h = 400;
+    const toRadians = Math.PI / 180;
+    const scale = window.devicePixelRatio * 4;
+    // Translate and rotate ctx around kitty center
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.translate(w / 2, h / 2);
+    ctx.rotate(50 * toRadians);
+    ctx.drawImage(
+      kitty.sprite,
+      /* Clip sprite from x and y, by width and height */
+      0,
+      3 * kitty.sprite.frameHeight * scale,
+      kitty.sprite.width * scale,
+      kitty.sprite.frameHeight * scale,
+      /* Draw kitty at x and y, by width and height */
+      -w / 2,
+      -h / 2,
+      w,
+      h,
+    );
+    ctx.restore();
+
+    ctx.fillStyle = "#F05945";
     ctx.textAlign = "center";
     ctx.font = "Bold 30px 'Averia Serif Libre'";
-    ctx.fillText("Tap Screen or Spacebar", 200, 230);
+    ctx.fillText("Tap Screen or Spacebar", 200, 250);
     ctx.fillText(`Max Score: ${Math.floor(score.state.maxScore)}`, 200, 300);
   }
 

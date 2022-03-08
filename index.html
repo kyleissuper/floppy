@@ -1,9 +1,11 @@
 <html>
   <head>
+    <title>Flappy Pocky - Kyle Tan</title>
     <script type="module" src="js/main.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
       body {
+        color: #fff;
         font-family: 'Averia Serif Libre', Arial;
         background-color: #2A2C2B;
         background-image: radial-gradient(circle at center center, #ffffff, #2A2C2B), repeating-radial-gradient(circle at center center, #ffffff, #ffffff, 10px, transparent 20px, transparent 10px);
@@ -15,32 +17,37 @@
       }
       #game {
         background-color: #FFF;
-        opacity: 1;
         background-size: 20px 20px;
-        position: absolute;
-        left: 50%;
-        margin-left: -200px;
-        top: 50%;
-        margin-top: -300px;
         border-radius: 10px;
+        display: block;
+        margin: auto;
       }
-      footer {
-        position: relative;
+      main {
+        width: 100%;
+        margin: auto;
+      }
+      header, footer, canvas {
         width: 100%;
         text-align: center;
-        top: calc(100% - 3em);
+      }
+      header, footer {
+        padding: 1em 0;
       }
       footer a {
+        display: inline-block;
         color: #fff;
       }
     </style>
   </head>
   <body>
-    <canvas id="game" width="400" height="600"></canvas>
-    <footer>
-      <a href="https://github.com/kyleissuper" target="_blank">
-        Made with &#10084;&#65039; by Kyle Tan
-      </a>
-    </footer>
+    <main>
+      <header><h1>Flappy Pocky</h1></header>
+      <canvas id="game" width="400" height="600"></canvas>
+      <footer>
+        <a href="https://github.com/kyleissuper" target="_blank">
+          Made with &#10084;&#65039; by Kyle Tan
+        </a>
+      </footer>
+    </main>
   </body>
 </html>

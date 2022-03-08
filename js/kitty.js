@@ -21,6 +21,7 @@ const kitty = (() => {
     draw,
     reset,
     didHitBox,
+    sprite,
   };
 
   return publicAPI;

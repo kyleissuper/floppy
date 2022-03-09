@@ -4,6 +4,11 @@
     <link href="style.css" rel="stylesheet" type="text/css">
     <script type="module" src="js/main.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Preload images -->
+    <link rel="preload" as="image" href="img/background.svg">
+    <link rel="preload" as="image" href="img/kitty.svg">
+    <link rel="preload" as="image" href="img/lamp.svg">
+    <link rel="preload" as="image" href="img/stool.svg">
   </head>
   <body>
     <!-- Colorscheme: https://colorhunt.co/palette/333333ffffffe1f4f3706c61 -->
@@ -19,5 +24,11 @@
         </a>
       </footer>
     </main>
+    <!-- Preload audio -->
+    <audio hidden preload="auto">
+      <source type="audio/wav" src="sound/end.wav">
+      <source type="audio/mpeg" src="sound/jump.mp3">
+      <source type="audio/mpeg" src="sound/downy feathers.mp3">
+    </audio>
   </body>
 </html>

@@ -1,9 +1,9 @@
 const sounds = (() => {
   let isMuted = false;
-  const jumpSound = new Audio("../sound/jump.mp3");
-  const endSound = new Audio("../sound/end.wav");
+  const jumpSound = new Audio("sound/jump.mp3");
+  const endSound = new Audio("sound/end.wav");
 
-  const music = new Audio("../sound/downy feathers.mp3");
+  const music = new Audio("sound/downy feathers.mp3");
   music.loop = true;
   music.volume = 0.3;
 

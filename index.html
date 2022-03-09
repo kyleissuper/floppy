@@ -1,49 +1,18 @@
 <html>
   <head>
     <title>Floppy Pocky - Kyle Tan</title>
+    <link href="style.css" rel="stylesheet" type="text/css">
     <script type="module" src="js/main.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-      body {
-        color: #fff;
-        font-family: 'Averia Serif Libre', Arial;
-        background-color: #2A2C2B;
-        background-image: radial-gradient(circle at center center, #ffffff, #2A2C2B), repeating-radial-gradient(circle at center center, #ffffff, #ffffff, 10px, transparent 20px, transparent 10px);
-        background-blend-mode: multiply;
-        margin: 0;
-        padding: 0;
-        width: 100vw;
-        height: 100vh;
-      }
-      #game {
-        background-color: #FFF;
-        background-size: 20px 20px;
-        border-radius: 10px;
-        display: block;
-        margin: auto;
-      }
-      main {
-        width: 100%;
-        margin: auto;
-      }
-      header, footer, canvas {
-        width: 100%;
-        text-align: center;
-      }
-      header, footer {
-        padding: 1em 0;
-      }
-      footer a {
-        display: inline-block;
-        color: #fff;
-      }
-    </style>
   </head>
   <body>
     <!-- Colorscheme: https://colorhunt.co/palette/333333ffffffe1f4f3706c61 -->
     <main>
       <header><h1>Floppy Pocky</h1></header>
-      <canvas id="game" width="400" height="600"></canvas>
+      <div id="gameContainer">
+        <a id="muteToggle"><span></span></a>
+        <canvas id="game" width="400" height="600"></canvas>
+      </div>
       <footer>
         <a href="https://github.com/kyleissuper" target="_blank">
           Made with &#10084;&#65039; by Kyle Tan

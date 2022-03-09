@@ -4,11 +4,11 @@ const game = (() => {
   let obstacles;
   let score;
   let backDrop;
+  let sounds;
   let canvas;
   let ctx;
   let boundaries;
   let isPlaying = false;
-  const sound = {};
 
   const publicAPI = {
     setup,
@@ -22,14 +22,13 @@ const game = (() => {
 
   // ******************************************
 
-  function setup(loadPhysics, loadKitty, loadObstacles, loadScore, loadBg) {
+  function setup(loadPhysics, loadKitty, loadObstacles, loadScore, loadBg, loadSounds) {
     physics = loadPhysics;
     kitty = loadKitty;
     obstacles = loadObstacles;
     score = loadScore;
     backDrop = loadBg;
-    sound.jump = new Audio("../sound/phaseJump3.mp3");
-    sound.collide = new Audio("../sound/punch.wav");
+    sounds = loadSounds;
 
     canvas = document.querySelector("#game");
     ctx = canvas.getContext("2d");
@@ -109,18 +108,18 @@ const game = (() => {
 
     for (let i = 0; i < boundaries.length; i += 1) {
       if (kitty.didHitBox(boundaries[i])) {
-        sound.collide.load();
-        sound.collide.play();
+        sounds.end();
         newGame();
+        return;
       }
     }
 
     const obstacleBoxes = obstacles.getBoxes();
     for (let i = 0; i < obstacleBoxes.length; i += 1) {
       if (kitty.didHitBox(obstacleBoxes[i])) {
-        sound.collide.load();
-        sound.collide.play();
+        sounds.end();
         newGame();
+        return;
       }
     }
   }
@@ -139,16 +138,14 @@ const game = (() => {
   function keyPress(evt) {
     if (evt.code === "Space") {
       isPlaying = true;
-      sound.jump.load();
-      sound.jump.play();
+      sounds.jump();
       kitty.jump();
     }
   }
 
   function tap() {
     isPlaying = true;
-    sound.jump.load();
-    sound.jump.play();
+    sounds.jump();
     kitty.jump();
   }
 

@@ -5,6 +5,7 @@ import kitty from "./kitty.js";
 import obstacleMaker from "./obstacleMaker.js";
 import scoreBoard from "./scoreBoard.js";
 import backDrop from "./backDrop.js";
+import sounds from "./sounds.js";
 import "./webfont.js";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -13,7 +14,14 @@ document.addEventListener("DOMContentLoaded", () => {
       families: ['Averia Serif Libre:700'],
     },
     active() {
-      game.setup(physics, kitty, obstacleMaker, scoreBoard, backDrop);
+      game.setup(
+        physics,
+        kitty,
+        obstacleMaker,
+        scoreBoard,
+        backDrop,
+        sounds,
+      );
       loop.start(game.nextFrame, game.renderWithLag);
     },
   });

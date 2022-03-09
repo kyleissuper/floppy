@@ -15,7 +15,7 @@ const game = (() => {
     showSplash,
     newGame,
     nextFrame,
-    renderWithLag,
+    render,
   };
 
   return publicAPI;
@@ -124,15 +124,15 @@ const game = (() => {
     }
   }
 
-  function renderWithLag(lagPercent) {
+  function render(lagPercent) {
     if (isPlaying === false) return;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    backDrop.draw(ctx, lagPercent);
-    obstacles.draw(ctx, lagPercent);
-    kitty.draw(ctx, lagPercent);
-    score.draw(ctx, lagPercent);
+    backDrop.draw(ctx);
+    obstacles.draw(ctx);
+    kitty.draw(ctx);
+    score.draw(ctx);
   }
 
   function keyPress(evt) {

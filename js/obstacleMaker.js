@@ -21,7 +21,7 @@ const obstacleMaker = (() => {
 
   // ****************************************
 
-  function draw(ctx, lagPercent) {
+  function draw(ctx) {
     for (let i = 0; i < obstacles.length; i += 1) {
       if (i % 2 === 0) {
         // Lamp

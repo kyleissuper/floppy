@@ -34,7 +34,7 @@ const scoreBoard = (() => {
     state.maxScore = Math.max(state.counter, state.maxScore);
   }
 
-  function draw(ctx, lagPercent) {
+  function draw(ctx) {
     ctx.font = state.font;
     ctx.fillStyle = state.color;
     ctx.textAlign = "center";

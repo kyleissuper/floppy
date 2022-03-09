@@ -60,7 +60,7 @@ const kitty = (() => {
     }
   }
 
-  function draw(ctx, lagPercent) {
+  function draw(ctx) {
     const x = state.posX - kittyRadius;
     const y = state.posY - kittyRadius;
     const w = kittyRadius * 2;

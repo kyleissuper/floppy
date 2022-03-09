@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
         backDrop,
         sounds,
       );
-      loop.start(game.nextFrame, game.renderWithLag);
+      loop.start(game.nextFrame, game.render);
     },
   });
 });

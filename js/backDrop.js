@@ -20,7 +20,7 @@ const backDrop = (() => {
     scroll %= width;
   }
 
-  function draw(ctx, lagPercent) {
+  function draw(ctx) {
     ctx.drawImage(
       image,
       -scroll,

@@ -6,7 +6,7 @@ const loop = (() => {
     frameDuration: 1000 / 60,
   };
   let nextFrame;
-  let renderWithLag;
+  let render;
 
   const publicAPI = {
     start,
@@ -16,9 +16,9 @@ const loop = (() => {
 
   // ****************************************
 
-  function start(gameNextFrame, gameRenderWithLag) {
+  function start(gameNextFrame, gameRender) {
     nextFrame = gameNextFrame;
-    renderWithLag = gameRenderWithLag;
+    render = gameRender;
     state.lastTick = Date.now();
     tick();
   }
@@ -34,7 +34,7 @@ const loop = (() => {
       nextFrame();
       state.lag -= state.frameDuration;
     }
-    renderWithLag(state.lag / state.frameDuration);
+    render();
   }
 })();
 

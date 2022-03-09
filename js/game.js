@@ -8,6 +8,7 @@ const game = (() => {
   let ctx;
   let boundaries;
   let isPlaying = false;
+  const sound = {};
 
   const publicAPI = {
     setup,
@@ -27,6 +28,8 @@ const game = (() => {
     obstacles = loadObstacles;
     score = loadScore;
     backDrop = loadBg;
+    sound.jump = new Audio("../sound/phaseJump3.mp3");
+    sound.collide = new Audio("../sound/punch.wav");
 
     canvas = document.querySelector("#game");
     ctx = canvas.getContext("2d");
@@ -105,12 +108,20 @@ const game = (() => {
     obstacles.nextFrame(physics);
 
     for (let i = 0; i < boundaries.length; i += 1) {
-      if (kitty.didHitBox(boundaries[i])) newGame();
+      if (kitty.didHitBox(boundaries[i])) {
+        sound.collide.load();
+        sound.collide.play();
+        newGame();
+      }
     }
 
     const obstacleBoxes = obstacles.getBoxes();
     for (let i = 0; i < obstacleBoxes.length; i += 1) {
-      if (kitty.didHitBox(obstacleBoxes[i])) newGame();
+      if (kitty.didHitBox(obstacleBoxes[i])) {
+        sound.collide.load();
+        sound.collide.play();
+        newGame();
+      }
     }
   }
 
@@ -128,12 +139,16 @@ const game = (() => {
   function keyPress(evt) {
     if (evt.code === "Space") {
       isPlaying = true;
+      sound.jump.load();
+      sound.jump.play();
       kitty.jump();
     }
   }
 
   function tap() {
     isPlaying = true;
+    sound.jump.load();
+    sound.jump.play();
     kitty.jump();
   }
 

@@ -69,7 +69,7 @@ const game = (() => {
     );
     ctx.restore();
 
-    ctx.fillStyle = "#F05945";
+    ctx.fillStyle = "#333333";
     ctx.textAlign = "center";
     ctx.font = "Bold 30px 'Averia Serif Libre'";
     ctx.fillText("Tap Screen or Spacebar", 200, 250);

@@ -37,7 +37,12 @@ const game = (() => {
     canvas.addEventListener("touchstart", tap);
     window.addEventListener("keypress", keyPress);
 
-    newGame();
+    const waitForImage = setInterval(() => {
+      if (kitty.sprites[3].complete) {
+        newGame();
+        clearInterval(waitForImage);
+      }
+    }, 500);
   }
 
   function showSplash() {

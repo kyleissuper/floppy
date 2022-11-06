@@ -11,7 +11,7 @@ import "./webfont.js";
 document.addEventListener("DOMContentLoaded", () => {
   WebFont.load({
     google: {
-      families: ['Averia Serif Libre:700'],
+      families: ["Averia Serif Libre:700"],
     },
     active() {
       game.setup(

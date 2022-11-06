@@ -69,8 +69,9 @@ const obstacleMaker = (() => {
     }
   }
 
+  /*
   function drawBox(ctx, lagPercent, box) {
-    /* Primarily for testing purposes */
+    // Primarily for testing purposes
     ctx.fillStyle = "#F00";
     ctx.beginPath();
     ctx.rect(
@@ -81,6 +82,7 @@ const obstacleMaker = (() => {
     );
     ctx.fill();
   }
+  */
 
   function addObstaclePairAtX(posX) {
     const posY = -height + Math.random() * (height - yGap);

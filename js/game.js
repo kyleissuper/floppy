@@ -124,7 +124,7 @@ const game = (() => {
     }
   }
 
-  function render(lagPercent) {
+  function render() {
     if (isPlaying === false) return;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);

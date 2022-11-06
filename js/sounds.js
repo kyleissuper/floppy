@@ -1,4 +1,8 @@
 const sounds = (() => {
+  // Temporary workaround for Safari
+  // TODO: Implement https://developer.mozilla.org/en-US/docs/Games/Techniques/Audio_for_Web_Games
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
   let isMuted = false;
   const jumpSound = new Audio("sound/jump.mp3");
   const endSound = new Audio("sound/end.wav");
@@ -42,12 +46,14 @@ const sounds = (() => {
   function jump() {
     if (isMuted === true) return;
     if (music.paused === true) playMusic();
+    if (isSafari === true) return;
     jumpSound.load();
     jumpSound.play();
   }
 
   function end() {
     if (isMuted === true) return;
+    if (isSafari === true) return;
     endSound.load();
     endSound.play();
   }

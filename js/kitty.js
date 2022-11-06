@@ -9,8 +9,12 @@ const kitty = (() => {
     shouldJump: false,
   };
 
-  const sprite = loadSprite();
-  const scale = window.devicePixelRatio * 4;
+  const sprites = {
+    0: loadSprite(0),
+    1: loadSprite(1),
+    2: loadSprite(2),
+    3: loadSprite(3),
+  };
   const toRadians = Math.PI / 180;
   const kittyRadius = state.radius * 1.9;
 
@@ -21,7 +25,7 @@ const kitty = (() => {
     draw,
     reset,
     didHitBox,
-    sprite,
+    sprites,
   };
 
   return publicAPI;
@@ -71,12 +75,7 @@ const kitty = (() => {
     ctx.translate(w / 2, h / 2);
     ctx.rotate((state.rotation + 30) * toRadians);
     ctx.drawImage(
-      sprite,
-      /* Clip sprite from x and y, by width and height */
-      0,
-      state.spriteNum * sprite.frameHeight * scale,
-      sprite.width * scale,
-      sprite.frameHeight * scale,
+      sprites[state.spriteNum],
       /* Draw kitty at x and y, by width and height */
       -w / 2,
       -h / 2,
@@ -124,13 +123,13 @@ const kitty = (() => {
     return (dx * dx + dy * dy <= (state.radius * state.radius));
   }
 
-  function loadSprite() {
+  function loadSprite(n) {
     const s = new Image();
-    s.onload = () => {
-      s.frameWidth = s.width;
-      s.frameHeight = s.height / 4;
-    };
-    s.src = "img/kitty.svg";
+    // s.onload = () => {
+    //   s.frameWidth = s.width;
+    //   s.frameHeight = s.height / 4;
+    // };
+    s.src = `img/kitty-${n}.svg`;
     return s;
   }
 })();

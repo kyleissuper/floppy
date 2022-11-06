@@ -2,8 +2,6 @@ body {
   color: #fff;
   font-family: 'Averia Serif Libre', Arial;
   background-color: #2A2C2B;
-  background-image: radial-gradient(circle at center center, #ffffff, #2A2C2B), repeating-radial-gradient(circle at center center, #ffffff, #ffffff, 10px, transparent 20px, transparent 10px);
-  background-blend-mode: multiply;
   margin: 0;
   padding: 0;
   width: 100vw;
@@ -15,6 +13,12 @@ body {
   border-radius: 10px;
   display: block;
   margin: auto;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -webkit-touch-callout : none
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
 }
 main {
   width: 100%;

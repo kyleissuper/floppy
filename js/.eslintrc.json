@@ -13,6 +13,7 @@
     "rules": {
         "import/extensions": "off",
         "quotes": ["error", "double"],
-        "no-use-before-define": ["warn", "nofunc"]
+        "no-use-before-define": ["warn", "nofunc"],
+        "no-restricted-syntax": "off"
     }
 }

@@ -1,6 +1,9 @@
 const sounds = (() => {
+  // TODO: Implement sounds using HTML5 Web Audio API because Safari is mostly broken
+  //       See:
+  //       * https://developer.mozilla.org/en-US/docs/Games/Techniques/Audio_for_Web_Games
+  //       * https://developer.apple.com/library/archive/documentation/AudioVideo/Conceptual/Using_HTML5_Audio_Video/PlayingandSynthesizingSounds/PlayingandSynthesizingSounds.html
   // Temporary workaround for Safari
-  // TODO: Implement https://developer.mozilla.org/en-US/docs/Games/Techniques/Audio_for_Web_Games
   const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
   let isMuted = false;

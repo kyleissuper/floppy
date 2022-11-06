@@ -45,6 +45,21 @@ const obstacleMaker = (() => {
     }
   }
 
+  // function draw(ctx) {
+  //   // Primarily for testing purposes
+  //   for (const box of obstacles) {
+  //     ctx.fillStyle = "#F00";
+  //     ctx.beginPath();
+  //     ctx.rect(
+  //       box.posX,
+  //       box.posY,
+  //       width,
+  //       height,
+  //     );
+  //     ctx.fill();
+  //   }
+  // }
+
   function getBoxes() {
     return obstacles;
   }
@@ -68,21 +83,6 @@ const obstacleMaker = (() => {
       obstacles.splice(0, 2);
     }
   }
-
-  /*
-  function drawBox(ctx, lagPercent, box) {
-    // Primarily for testing purposes
-    ctx.fillStyle = "#F00";
-    ctx.beginPath();
-    ctx.rect(
-      box.posX,
-      box.posY,
-      width,
-      height,
-    );
-    ctx.fill();
-  }
-  */
 
   function addObstaclePairAtX(posX) {
     const posY = -height + Math.random() * (height - yGap);

@@ -85,21 +85,19 @@ const kitty = (() => {
     ctx.restore();
   }
 
-  /*
-  function drawCircle(ctx) {
-    // Left here for testing purposes
-    ctx.fillStyle = "#F00";
-    ctx.beginPath();
-    ctx.arc(
-      state.posX,
-      state.posY,
-      state.radius,
-      0,
-      2 * Math.PI,
-    );
-    ctx.fill();
-  }
-  */
+  // function draw(ctx) {
+  //   // Left here for testing purposes
+  //   ctx.fillStyle = "#F00";
+  //   ctx.beginPath();
+  //   ctx.arc(
+  //     state.posX,
+  //     state.posY,
+  //     state.radius,
+  //     0,
+  //     2 * Math.PI,
+  //   );
+  //   ctx.fill();
+  // }
 
   function reset() {
     state.posY = 30 + 200;

@@ -14,15 +14,23 @@ body {
   margin: auto;
 }
 #game {
+  display: block;
+  border-radius: 10px;
+  margin: auto;
+
+  /* Scaling for smaller devices */
   max-width: 100%;
   height: auto;
   object-fit: scale-down;
 
+  /* Background */
   background-color: #FFF;
-  background-size: 20px 20px;
-  border-radius: 10px;
-  display: block;
-  margin: auto;
+  background-image: url('img/background.svg');
+  background-repeat: repeat-x;
+  background-position: left center;
+  background-size: 2760px;
+
+  /* Remove interaction */
   -webkit-user-select: none;
   -khtml-user-select: none;
   -webkit-touch-callout : none

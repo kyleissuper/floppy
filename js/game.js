@@ -123,7 +123,7 @@ const game = (() => {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    backDrop.draw(ctx);
+    backDrop.draw();
     obstacles.draw(ctx);
     kitty.draw(ctx);
     score.draw(ctx);

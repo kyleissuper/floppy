@@ -7,7 +7,17 @@ body {
   width: 100vw;
   height: 100vh;
 }
+#gameContainer {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  margin: auto;
+}
 #game {
+  max-width: 100%;
+  height: auto;
+  object-fit: scale-down;
+
   background-color: #FFF;
   background-size: 20px 20px;
   border-radius: 10px;
@@ -35,15 +45,13 @@ footer a {
   display: inline-block;
   color: #fff;
 }
-#gameContainer {
-  position: relative;
-}
 /* Start mute toggle here */
 #muteToggle {
   cursor: pointer;
   position: absolute;
   top: 20px;
-  left: Calc(50% + 150px);
+  /*left: Calc(50% + 150px);*/
+  right: 20px;
   width: 30px;
   height: 30px;
   display: block;

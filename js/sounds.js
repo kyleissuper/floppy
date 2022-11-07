@@ -72,16 +72,11 @@ const sounds = (() => {
     playTrack(endTrack);
   }
 
-  async function getFile(filePath) {
+  async function loadFile(filePath) {
     const resp = await fetch(filePath);
     const arrBuffer = await resp.arrayBuffer();
     const audBuffer = await audioCtx.decodeAudioData(arrBuffer);
     return audBuffer;
-  }
-
-  async function loadFile(filePath) {
-    const track = await getFile(filePath);
-    return track;
   }
 
   function playTrack(audioBuffer) {

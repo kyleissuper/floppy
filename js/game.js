@@ -34,9 +34,6 @@ const game = (() => {
     ctx = canvas.getContext("2d");
     rescaleCanvas();
 
-    canvas.addEventListener("touchstart", tap);
-    window.addEventListener("keypress", keyPress);
-
     const waitForMedia = setInterval(() => {
       let allLoaded = true;
 
@@ -51,6 +48,8 @@ const game = (() => {
 
       if (allLoaded === true) {
         newGame();
+        canvas.addEventListener("touchstart", tap);
+        window.addEventListener("keypress", keyPress);
         clearInterval(waitForMedia);
       }
     }, 500);

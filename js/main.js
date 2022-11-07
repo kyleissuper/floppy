@@ -8,21 +8,28 @@ import backDrop from "./backDrop.js";
 import sounds from "./sounds.js";
 import "./webfont.js";
 
+function start() {
+  game.setup(
+    physics,
+    kitty,
+    obstacleMaker,
+    scoreBoard,
+    backDrop,
+    sounds,
+  );
+  loop.start(game.nextFrame, game.render);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   WebFont.load({
     google: {
       families: ["Averia Serif Libre:700"],
     },
     active() {
-      game.setup(
-        physics,
-        kitty,
-        obstacleMaker,
-        scoreBoard,
-        backDrop,
-        sounds,
-      );
-      loop.start(game.nextFrame, game.render);
+      start();
+    },
+    inactive() {
+      start();
     },
   });
 });

@@ -1,21 +1,28 @@
 const sounds = (() => {
-  // TODO: Implement sounds using HTML5 Web Audio API because Safari is mostly broken
-  //       See:
-  //       * https://developer.mozilla.org/en-US/docs/Games/Techniques/Audio_for_Web_Games
-  //       * https://developer.apple.com/library/archive/documentation/AudioVideo/Conceptual/Using_HTML5_Audio_Video/PlayingandSynthesizingSounds/PlayingandSynthesizingSounds.html
-  // Temporary workaround for Safari
-  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-
-  let isMuted = false;
-  const jumpSound = new Audio("sound/jump.mp3");
-  const endSound = new Audio("sound/end.wav");
-
-  const music = new Audio("sound/downy feathers.mp3");
-  music.loop = true;
-  music.volume = 0.3;
-
   const toggle = document.querySelector("#muteToggle");
   toggle.addEventListener("click", toggleMute);
+
+  const audioCtx = new AudioContext();
+
+  let jumpTrack;
+  let endTrack;
+  let musicTrack;
+  let musicNode;
+  let isMuted = false;
+  let isPaused = true;
+
+  loadFile("sound/jump.mp3")
+    .then((track) => {
+      jumpTrack = track;
+    });
+  loadFile("sound/end.wav")
+    .then((track) => {
+      endTrack = track;
+    });
+  loadFile("sound/music.mp3")
+    .then((track) => {
+      musicTrack = track;
+    });
 
   const publicAPI = {
     jump,
@@ -38,27 +45,51 @@ const sounds = (() => {
   }
 
   function playMusic() {
-    music.load();
-    music.play();
+    if (!musicTrack) return;
+    if (!musicNode) {
+      musicNode = playTrack(musicTrack);
+      musicNode.loop = true;
+      isPaused = false;
+    } else if (isPaused) {
+      musicNode.playbackRate.value = 1;
+      isPaused = false;
+    }
   }
 
   function pauseMusic() {
-    music.pause();
+    musicNode.playbackRate.value = 0;
+    isPaused = true;
   }
 
   function jump() {
-    if (isMuted === true) return;
-    if (music.paused === true) playMusic();
-    if (isSafari === true) return;
-    jumpSound.load();
-    jumpSound.play();
+    if (isMuted) return;
+    if (isPaused) playMusic();
+    playTrack(jumpTrack);
   }
 
   function end() {
-    if (isMuted === true) return;
-    if (isSafari === true) return;
-    endSound.load();
-    endSound.play();
+    if (isMuted) return;
+    playTrack(endTrack);
+  }
+
+  async function getFile(filePath) {
+    const resp = await fetch(filePath);
+    const arrBuffer = await resp.arrayBuffer();
+    const audBuffer = await audioCtx.decodeAudioData(arrBuffer);
+    return audBuffer;
+  }
+
+  async function loadFile(filePath) {
+    const track = await getFile(filePath);
+    return track;
+  }
+
+  function playTrack(audioBuffer) {
+    const trackSource = audioCtx.createBufferSource();
+    trackSource.buffer = audioBuffer;
+    trackSource.connect(audioCtx.destination);
+    trackSource.start();
+    return trackSource;
   }
 })();
 

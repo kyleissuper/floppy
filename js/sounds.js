@@ -1,7 +1,10 @@
+import unmuteIosAudio from "./unmute-ios.js";
+
 const sounds = (() => {
   const toggle = document.querySelector("#muteToggle");
   toggle.addEventListener("click", toggleMute);
 
+  unmuteIosAudio();
   const audioCtx = new window.AudioContext() || new window.webkitAudioContext();
 
   let jumpTrack;

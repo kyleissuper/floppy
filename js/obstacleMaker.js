@@ -15,6 +15,7 @@ const obstacleMaker = (() => {
     nextFrame,
     draw,
     getBoxes,
+    listImages,
   };
 
   return publicAPI;
@@ -104,6 +105,11 @@ const obstacleMaker = (() => {
     lampImage.src = "img/lamp.svg";
     stoolImage = new Image();
     stoolImage.src = "img/stool.svg";
+  }
+
+  function* listImages() {
+    yield lampImage;
+    yield stoolImage;
   }
 })();
 

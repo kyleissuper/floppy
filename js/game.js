@@ -22,13 +22,13 @@ const game = (() => {
 
   // ******************************************
 
-  function setup(loadPhysics, loadKitty, loadObstacles, loadScore, loadBg, loadSounds) {
-    physics = loadPhysics;
-    kitty = loadKitty;
-    obstacles = loadObstacles;
-    score = loadScore;
-    backDrop = loadBg;
-    sounds = loadSounds;
+  function setup(newPhysics, newKitty, newObstacles, newScore, newBg, newSounds) {
+    physics = newPhysics;
+    kitty = newKitty;
+    obstacles = newObstacles;
+    score = newScore;
+    backDrop = newBg;
+    sounds = newSounds;
 
     canvas = document.querySelector("#game");
     ctx = canvas.getContext("2d");
@@ -37,10 +37,21 @@ const game = (() => {
     canvas.addEventListener("touchstart", tap);
     window.addEventListener("keypress", keyPress);
 
-    const waitForImage = setInterval(() => {
-      if (kitty.sprites[3].complete) {
+    const waitForMedia = setInterval(() => {
+      let allLoaded = true;
+
+      // kitty sprites
+      for (const sprite of kitty.listImages()) {
+        if (!sprite.complete) allLoaded = false;
+      }
+      // obstacles
+      for (const obstacle of obstacles.listImages()) {
+        if (!obstacle.complete) allLoaded = false;
+      }
+
+      if (allLoaded === true) {
         newGame();
-        clearInterval(waitForImage);
+        clearInterval(waitForMedia);
       }
     }, 500);
   }

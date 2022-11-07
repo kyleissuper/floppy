@@ -26,6 +26,7 @@ const kitty = (() => {
     reset,
     didHitBox,
     sprites,
+    listImages,
   };
 
   return publicAPI;
@@ -123,12 +124,14 @@ const kitty = (() => {
 
   function loadSprite(n) {
     const s = new Image();
-    // s.onload = () => {
-    //   s.frameWidth = s.width;
-    //   s.frameHeight = s.height / 4;
-    // };
     s.src = `img/kitty-${n}.svg`;
     return s;
+  }
+
+  function* listImages() {
+    for (const img of Object.values(sprites)) {
+      yield img;
+    }
   }
 })();
 

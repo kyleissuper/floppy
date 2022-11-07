@@ -2,7 +2,7 @@ const sounds = (() => {
   const toggle = document.querySelector("#muteToggle");
   toggle.addEventListener("click", toggleMute);
 
-  const audioCtx = new AudioContext();
+  const audioCtx = new window.AudioContext() || new window.webkitAudioContext();
 
   let jumpTrack;
   let endTrack;

@@ -292,7 +292,7 @@ class Cat {
     this.alive = true;
     this.fitness = 0;
     this.pipesPassed = 0;
-    this.lastScoredX = -1;
+    this.scoredPairIds = new Set();
     this.rotation = 0;
     this.animFrame = 60;
     this.spriteNum = 3;
@@ -341,9 +341,9 @@ class Cat {
     if (!this.alive) return;
     for (let i = 0; i < obstacles.length; i += 2) {
       const pipe = obstacles[i];
-      if (pipe.posX + OBS_WIDTH < KITTY_X && pipe.posX !== this.lastScoredX) {
+      if (pipe.posX + OBS_WIDTH < KITTY_X && !this.scoredPairIds.has(pipe.pairId)) {
         this.pipesPassed++;
-        this.lastScoredX = pipe.posX;
+        this.scoredPairIds.add(pipe.pairId);
       }
     }
   }
@@ -382,19 +382,20 @@ class ObstacleManager {
 
   reset() {
     this.obstacles = [];
+    this.nextPairId = 0;
     this.addPairAt(600);
     while (this.obstacles.length < MAX_PAIRS * 2) {
       const lastX = this.obstacles[this.obstacles.length - 1].posX;
       this.addPairAt(lastX + OBS_WIDTH + OBS_X_GAP);
     }
-    this.pipeCount = 0;
   }
 
   addPairAt(posX) {
     const posY = -OBS_HEIGHT + Math.random() * (OBS_HEIGHT - OBS_Y_GAP);
+    const pairId = this.nextPairId++;
     this.obstacles.push(
-      { posX, posY, width: OBS_WIDTH, height: OBS_HEIGHT },
-      { posX, posY: posY + OBS_HEIGHT + OBS_Y_GAP, width: OBS_WIDTH, height: OBS_HEIGHT }
+      { posX, posY, width: OBS_WIDTH, height: OBS_HEIGHT, pairId },
+      { posX, posY: posY + OBS_HEIGHT + OBS_Y_GAP, width: OBS_WIDTH, height: OBS_HEIGHT, pairId }
     );
   }
 

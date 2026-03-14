@@ -291,6 +291,8 @@ class Cat {
     this.fallSpeed = JUMP_SPEED;
     this.alive = true;
     this.fitness = 0;
+    this.pipesPassed = 0;
+    this.lastScoredX = -1;
     this.rotation = 0;
     this.animFrame = 60;
     this.spriteNum = 3;
@@ -335,6 +337,17 @@ class Cat {
     }
   }
 
+  scorePipes(obstacles) {
+    if (!this.alive) return;
+    for (let i = 0; i < obstacles.length; i += 2) {
+      const pipe = obstacles[i];
+      if (pipe.posX + OBS_WIDTH < KITTY_X && pipe.posX !== this.lastScoredX) {
+        this.pipesPassed++;
+        this.lastScoredX = pipe.posX;
+      }
+    }
+  }
+
   decide(obstacles) {
     if (!this.alive) return;
     // Find next obstacle pair ahead of cat
@@ -374,8 +387,7 @@ class ObstacleManager {
       const lastX = this.obstacles[this.obstacles.length - 1].posX;
       this.addPairAt(lastX + OBS_WIDTH + OBS_X_GAP);
     }
-    this.score = 0;
-    this.lastScoredX = -1;
+    this.pipeCount = 0;
   }
 
   addPairAt(posX) {
@@ -392,13 +404,6 @@ class ObstacleManager {
       const lastX = this.obstacles[this.obstacles.length - 1].posX;
       this.addPairAt(lastX + OBS_WIDTH + OBS_X_GAP);
       this.obstacles.splice(0, 2);
-    }
-    // Score: count pipes passed
-    for (let i = 0; i < this.obstacles.length; i += 2) {
-      if (this.obstacles[i].posX + OBS_WIDTH < KITTY_X && this.obstacles[i].posX !== this.lastScoredX) {
-        this.score++;
-        this.lastScoredX = this.obstacles[i].posX;
-      }
     }
   }
 }
@@ -455,7 +460,8 @@ function nextGeneration() {
   const fitnesses = cats.map(c => c.fitness);
   const bestFitness = Math.max(...fitnesses);
   const avgFitness = fitnesses.reduce((a, b) => a + b, 0) / fitnesses.length;
-  if (bestFitness > allTimeBest) allTimeBest = bestFitness;
+  const bestPipes = Math.max(...cats.map(c => c.pipesPassed));
+  if (bestPipes > allTimeBest) allTimeBest = bestPipes;
 
   bestHistory.push({ gen: generation, best: bestFitness, avg: avgFitness });
 
@@ -476,8 +482,9 @@ function updateStats() {
   document.getElementById('gen').textContent = generation;
   const aliveCount = cats.filter(c => c.alive).length;
   document.getElementById('alive').textContent = aliveCount;
-  document.getElementById('best').textContent = obsMgr.score;
-  document.getElementById('alltime').textContent = Math.floor(allTimeBest / 12); // approx pipes
+  const bestPipes = Math.max(...cats.map(c => c.pipesPassed));
+  document.getElementById('best').textContent = bestPipes;
+  document.getElementById('alltime').textContent = allTimeBest;
 }
 
 function simStep() {
@@ -495,6 +502,7 @@ function simStep() {
     cat.decide(obsMgr.obstacles);
     cat.update();
     cat.checkCollision(obsMgr.obstacles);
+    cat.scorePipes(obsMgr.obstacles);
   }
 }
 
@@ -555,7 +563,8 @@ function render() {
   ctx.fillStyle = '#fff';
   ctx.font = 'bold 14px sans-serif';
   ctx.textAlign = 'left';
-  ctx.fillText(`Gen ${generation}  |  Alive: ${cats.filter(c => c.alive).length}/${POP_SIZE}  |  Pipes: ${obsMgr.score}`, 10, 24);
+  const bestCatPipes = Math.max(...cats.map(c => c.pipesPassed));
+  ctx.fillText(`Gen ${generation}  |  Alive: ${cats.filter(c => c.alive).length}/${POP_SIZE}  |  Pipes: ${bestCatPipes}`, 10, 24);
 
   // Draw network viz for best alive cat
   if (bestAliveIdx >= 0) drawNetwork(cats[bestAliveIdx]);

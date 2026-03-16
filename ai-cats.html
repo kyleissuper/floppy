@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Floppy Pocky - AI Learns to Play</title>
+  <meta name="description" content="Watch AI cats evolve to master Floppy Pocky using a genetic algorithm">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #1a1a2e;
+      color: #eee;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    .header {
+      text-align: center;
+      padding: 12px 8px 4px;
+    }
+    .header h1 {
+      font-size: 1.3em;
+      color: #e94560;
+    }
+    .header p {
+      font-size: 0.8em;
+      color: #aaa;
+      margin-top: 2px;
+    }
+    .stats-bar {
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 4px;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .stat {
+      text-align: center;
+      background: rgba(255,255,255,0.06);
+      border-radius: 8px;
+      padding: 6px 10px;
+      min-width: 70px;
+      flex: 1;
+    }
+    .stat .label {
+      font-size: 0.6em;
+      text-transform: uppercase;
+      color: #888;
+      letter-spacing: 0.5px;
+    }
+    .stat .value {
+      font-size: 1.1em;
+      font-weight: bold;
+      color: #e94560;
+    }
+    #canvasWrap {
+      width: 100%;
+      max-width: 420px;
+      margin: 4px auto;
+      padding: 0 8px;
+    }
+    #game {
+      width: 100%;
+      display: block;
+      border-radius: 10px;
+      background: #fff;
+      touch-action: none;
+    }
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.85em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.1s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn:active { transform: scale(0.95); }
+    .btn-primary { background: #e94560; color: #fff; }
+    .btn-secondary { background: rgba(255,255,255,0.1); color: #eee; }
+    .btn-active { background: #0f3460; color: #fff; }
+    .network-viz {
+      max-width: 420px;
+      margin: 4px auto;
+      padding: 0 8px;
+    }
+    .network-viz h3 {
+      font-size: 0.75em;
+      color: #888;
+      text-align: center;
+      margin-bottom: 4px;
+    }
+    #networkCanvas {
+      width: 100%;
+      display: block;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.03);
+    }
+    .graph-section {
+      max-width: 420px;
+      margin: 4px auto;
+      padding: 0 8px 12px;
+    }
+    .graph-section h3 {
+      font-size: 0.75em;
+      color: #888;
+      text-align: center;
+      margin-bottom: 4px;
+    }
+    #graphBest, #graphAvg {
+      width: 100%;
+      display: block;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.03);
+    }
+    footer {
+      text-align: center;
+      padding: 8px;
+      font-size: 0.7em;
+    }
+    footer a { color: #e94560; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Floppy Pocky AI</h1>
+    <p>Neural network cats evolving via genetic algorithm</p>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat"><div class="label">Gen</div><div class="value" id="gen">1</div></div>
+    <div class="stat"><div class="label">Alive</div><div class="value" id="alive">50</div></div>
+    <div class="stat"><div class="label">Best</div><div class="value" id="best">0</div></div>
+    <div class="stat"><div class="label">All-Time</div><div class="value" id="alltime">0</div></div>
+  </div>
+
+  <div id="canvasWrap">
+    <canvas id="game" width="400" height="600"></canvas>
+  </div>
+
+  <div class="controls">
+    <button class="btn btn-primary" id="btnStart">Start</button>
+    <button class="btn btn-secondary" id="btnSpeed">Speed: 1x</button>
+    <button class="btn btn-secondary" id="btnReset">Reset</button>
+  </div>
+
+  <div class="network-viz">
+    <h3>Best Cat's Neural Network (live)</h3>
+    <canvas id="networkCanvas" width="380" height="140"></canvas>
+  </div>
+
+  <div class="graph-section">
+    <h3>Best Fitness</h3>
+    <canvas id="graphBest" width="380" height="70"></canvas>
+  </div>
+  <div class="graph-section">
+    <h3>Average Fitness</h3>
+    <canvas id="graphAvg" width="380" height="70"></canvas>
+  </div>
+
+  <footer>
+    <a href="index.html">Play the original game</a> &middot;
+    <a href="https://github.com/kyleissuper">Kyle Tan</a>
+  </footer>
+
+<script>
+// ====== NEURAL NETWORK ======
+class NeuralNet {
+  constructor(weights) {
+    // Architecture: 5 inputs -> 6 hidden (tanh) -> 1 output (sigmoid)
+    // Weight layout (interleaved): per hidden neuron [5 input weights, 1 bias], then [6 output weights, 1 bias]
+    this.inputSize = 5;
+    this.hiddenSize = 6;
+    const ih = this.inputSize * this.hiddenSize; // input-to-hidden weights
+    const hb = this.hiddenSize;                  // hidden biases
+    const ho = this.hiddenSize;                  // hidden-to-output weights
+    const ob = 1;                                // output bias
+    this.totalWeights = ih + hb + ho + ob;       // 30 + 6 + 6 + 1 = 43
+    this.hiddenBuf = new Float64Array(this.hiddenSize); // reusable buffer
+
+    if (weights) {
+      this.weights = weights.slice();
+    } else {
+      this.weights = new Array(this.totalWeights);
+      for (let i = 0; i < this.totalWeights; i++) {
+        this.weights[i] = Math.random() * 2 - 1;
+      }
+    }
+  }
+
+  // Returns {output, hidden} so visualization can reuse activations.
+  // Weight layout (interleaved): for each hidden neuron h, inputSize weights
+  // then 1 bias, followed by hiddenSize output weights then 1 output bias.
+  forward(inputs) {
+    const hidden = this.hiddenBuf;
+    let idx = 0;
+    for (let h = 0; h < this.hiddenSize; h++) {
+      let sum = 0;
+      for (let i = 0; i < this.inputSize; i++) {
+        sum += inputs[i] * this.weights[idx++];
+      }
+      sum += this.weights[idx++]; // bias
+      hidden[h] = Math.tanh(sum);
+    }
+    let out = 0;
+    for (let h = 0; h < this.hiddenSize; h++) {
+      out += hidden[h] * this.weights[idx++];
+    }
+    out += this.weights[idx++]; // bias
+    const output = 1 / (1 + Math.exp(-out)); // sigmoid
+    return { output, hidden };
+  }
+
+  predict(inputs) {
+    return this.forward(inputs).output;
+  }
+
+  copy() {
+    return NeuralNet.withWeights(this.weights.slice());
+  }
+
+  static withWeights(weights) {
+    const net = Object.create(NeuralNet.prototype);
+    net.inputSize = 5;
+    net.hiddenSize = 6;
+    net.totalWeights = 43;
+    net.hiddenBuf = new Float64Array(6);
+    net.weights = weights;
+    return net;
+  }
+}
+
+// ====== GENETIC ALGORITHM ======
+class GeneticAlgorithm {
+  constructor(popSize) {
+    this.popSize = popSize;
+    this.mutationRate = 0.15;
+    this.mutationStrength = 0.5;
+  }
+
+  crossover(parentA, parentB) {
+    // Build weight array directly, avoiding wasted random init
+    const len = parentA.weights.length;
+    const childWeights = new Array(len);
+    for (let i = 0; i < len; i++) {
+      childWeights[i] = Math.random() < 0.5 ? parentA.weights[i] : parentB.weights[i];
+    }
+    return NeuralNet.withWeights(childWeights);
+  }
+
+  mutate(net) {
+    for (let i = 0; i < net.weights.length; i++) {
+      if (Math.random() < this.mutationRate) {
+        // Box-Muller for Gaussian perturbation (many small, few large mutations)
+        const u1 = Math.random() || 1e-10;
+        const u2 = Math.random();
+        const gauss = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+        net.weights[i] += gauss * this.mutationStrength;
+        // Clamp to prevent saturation from unbounded growth
+        net.weights[i] = Math.max(-5, Math.min(5, net.weights[i]));
+      }
+    }
+    return net;
+  }
+
+  select(population, fitnesses) {
+    const tournamentSize = 5;
+    let bestIdx = Math.floor(Math.random() * population.length);
+    for (let i = 1; i < tournamentSize; i++) {
+      const idx = Math.floor(Math.random() * population.length);
+      if (fitnesses[idx] > fitnesses[bestIdx]) bestIdx = idx;
+    }
+    return population[bestIdx];
+  }
+
+  evolve(population, fitnesses) {
+    const newPop = [];
+    // Elitism: keep top 2 unchanged
+    const sorted = fitnesses.map((f, i) => ({ f, i })).sort((a, b) => b.f - a.f);
+    newPop.push(population[sorted[0].i].copy());
+    newPop.push(population[sorted[1].i].copy());
+
+    while (newPop.length < this.popSize) {
+      const parentA = this.select(population, fitnesses);
+      const parentB = this.select(population, fitnesses);
+      // Avoid self-crossover: if same parent, just clone + mutate
+      const child = (parentA === parentB)
+        ? this.mutate(parentA.copy())
+        : this.mutate(this.crossover(parentA, parentB));
+      newPop.push(child);
+    }
+    return newPop;
+  }
+}
+
+// ====== GAME SIMULATION ======
+const CANVAS_W = 400, CANVAS_H = 600;
+const KITTY_RADIUS = 30;
+const KITTY_X = 90;
+const SCROLL_SPEED = -5;
+const FALL_GRAVITY = 1.3;
+const JUMP_SPEED = -17;
+const MAX_FALL_SPEED = 25;
+const OBS_WIDTH = 70;
+const OBS_HEIGHT = 600;
+const OBS_X_GAP = 220;
+const OBS_Y_GAP = 260;
+const MAX_PAIRS = 3;
+const TO_RAD = Math.PI / 180;
+const KITTY_DRAW_R = KITTY_RADIUS * 1.9;
+const PIPE_BONUS = 500; // fitness bonus per pipe cleared
+
+class Cat {
+  constructor(brain) {
+    this.brain = brain;
+    this.reset();
+  }
+
+  reset() {
+    this.y = 230;
+    this.fallSpeed = JUMP_SPEED;
+    this.alive = true;
+    this.jumped = false;
+    this.fitness = 0;
+    this.pipesPassed = 0;
+    this.scoredPairIds = new Set();
+    this.rotation = 0;
+    this.animFrame = 60;
+    this.spriteNum = 3;
+  }
+
+  jump() {
+    this.jumped = true;
+  }
+
+  // Matches original kitty.js: on jump frames, gravity is NOT applied
+  update() {
+    if (!this.alive) return;
+    if (this.jumped) {
+      this.fallSpeed = JUMP_SPEED;
+      this.rotation = 0;
+      this.animFrame = 0;
+      this.jumped = false;
+    } else {
+      this.fallSpeed = Math.min(this.fallSpeed + FALL_GRAVITY, MAX_FALL_SPEED);
+      this.rotation = Math.min(150, this.rotation + 3.5);
+    }
+    this.y += this.fallSpeed;
+    this.fitness += 1;
+
+    // Sprite animation
+    this.animFrame++;
+    if (this.animFrame < 5) this.spriteNum = 0;
+    else if (this.animFrame < 13) this.spriteNum = 1;
+    else if (this.animFrame < 17) this.spriteNum = 2;
+    else this.spriteNum = 3;
+
+    // Boundaries
+    if (this.y - KITTY_RADIUS < 0 || this.y + KITTY_RADIUS > CANVAS_H) {
+      this.alive = false;
+    }
+  }
+
+  checkCollision(obstacles) {
+    if (!this.alive) return;
+    for (const box of obstacles) {
+      const distX = Math.abs(KITTY_X - box.posX - box.width / 2);
+      const distY = Math.abs(this.y - box.posY - box.height / 2);
+      if (distX > box.width / 2 + KITTY_RADIUS || distY > box.height / 2 + KITTY_RADIUS) continue;
+      if (distX <= box.width / 2 || distY <= box.height / 2) { this.alive = false; return; }
+      const dx = distX - box.width / 2;
+      const dy = distY - box.height / 2;
+      if (dx * dx + dy * dy <= KITTY_RADIUS * KITTY_RADIUS) { this.alive = false; return; }
+    }
+  }
+
+  scorePipes(obstacles) {
+    if (!this.alive) return;
+    for (let i = 0; i < obstacles.length; i += 2) {
+      const pipe = obstacles[i];
+      if (pipe.posX + OBS_WIDTH < KITTY_X && !this.scoredPairIds.has(pipe.pairId)) {
+        this.pipesPassed++;
+        this.fitness += PIPE_BONUS;
+        this.scoredPairIds.add(pipe.pairId);
+      }
+    }
+  }
+
+  // Find the next obstacle pair whose right edge is ahead of the cat center
+  findNextPipe(obstacles) {
+    for (let i = 0; i < obstacles.length; i += 2) {
+      if (obstacles[i].posX + OBS_WIDTH > KITTY_X) {
+        return obstacles[i];
+      }
+    }
+    return null;
+  }
+
+  decide(obstacles) {
+    if (!this.alive) return;
+    const nextTop = this.findNextPipe(obstacles);
+    if (!nextTop) return;
+
+    const gapCenterY = nextTop.posY + nextTop.height + OBS_Y_GAP / 2;
+    const clampedSpeed = Math.max(-1, Math.min(1, this.fallSpeed / MAX_FALL_SPEED));
+    const inputs = [
+      this.y / CANVAS_H,
+      clampedSpeed,
+      (nextTop.posX - KITTY_X) / CANVAS_W,
+      gapCenterY / CANVAS_H,
+      (this.y - gapCenterY) / CANVAS_H,
+    ];
+
+    if (this.brain.predict(inputs) > 0.5) {
+      this.jump();
+    }
+  }
+}
+
+class ObstacleManager {
+  constructor() { this.reset(); }
+
+  reset() {
+    this.obstacles = [];
+    this.nextPairId = 0;
+    this.addPairAt(600);
+    while (this.obstacles.length < MAX_PAIRS * 2) {
+      const lastX = this.obstacles[this.obstacles.length - 1].posX;
+      this.addPairAt(lastX + OBS_WIDTH + OBS_X_GAP);
+    }
+  }
+
+  addPairAt(posX) {
+    const posY = -OBS_HEIGHT + Math.random() * (OBS_HEIGHT - OBS_Y_GAP);
+    const pairId = this.nextPairId++;
+    this.obstacles.push(
+      { posX, posY, width: OBS_WIDTH, height: OBS_HEIGHT, pairId },
+      { posX, posY: posY + OBS_HEIGHT + OBS_Y_GAP, width: OBS_WIDTH, height: OBS_HEIGHT, pairId }
+    );
+  }
+
+  update() {
+    for (const o of this.obstacles) o.posX += SCROLL_SPEED;
+    while (this.obstacles[0].posX + OBS_WIDTH < 0) {
+      const lastX = this.obstacles[this.obstacles.length - 1].posX;
+      this.addPairAt(lastX + OBS_WIDTH + OBS_X_GAP);
+      this.obstacles.splice(0, 2);
+    }
+  }
+}
+
+// ====== MAIN APP ======
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+const netCanvas = document.getElementById('networkCanvas');
+const netCtx = netCanvas.getContext('2d');
+const graphBestCanvas = document.getElementById('graphBest');
+const graphBestCtx = graphBestCanvas.getContext('2d');
+const graphAvgCanvas = document.getElementById('graphAvg');
+const graphAvgCtx = graphAvgCanvas.getContext('2d');
+
+// Scale canvases for retina
+function scaleCanvas(c, cx, w, h) {
+  const dpr = window.devicePixelRatio || 1;
+  c.width = w * dpr;
+  c.height = h * dpr;
+  c.style.width = '100%';
+  cx.scale(dpr, dpr);
+}
+scaleCanvas(canvas, ctx, CANVAS_W, CANVAS_H);
+scaleCanvas(netCanvas, netCtx, 380, 140);
+scaleCanvas(graphBestCanvas, graphBestCtx, 380, 70);
+scaleCanvas(graphAvgCanvas, graphAvgCtx, 380, 70);
+
+// Load images
+const bgImg = new Image(); bgImg.src = 'img/background.svg';
+const lampImg = new Image(); lampImg.src = 'img/lamp.svg';
+const stoolImg = new Image(); stoolImg.src = 'img/stool.svg';
+const kittySprites = [0,1,2,3].map(n => { const img = new Image(); img.src = 'img/kitty-' + n + '.svg'; return img; });
+
+const POP_SIZE = 50;
+const ga = new GeneticAlgorithm(POP_SIZE);
+let generation = 1;
+let allTimeBest = 0;
+let bestHistory = []; // {gen, best, avg}
+let running = false;
+let speed = 1;
+let cats = [];
+let obsMgr = new ObstacleManager();
+let bgOffset = 0;
+let frameCount = 0;
+
+function initPopulation() {
+  cats = [];
+  for (let i = 0; i < POP_SIZE; i++) {
+    cats.push(new Cat(new NeuralNet()));
+  }
+  obsMgr.reset();
+  bgOffset = 0;
+  frameCount = 0;
+}
+
+function nextGeneration() {
+  // fitness already includes PIPE_BONUS per pipe cleared
+  const fitnesses = cats.map(c => c.fitness);
+  const bestPipes = Math.max(...cats.map(c => c.pipesPassed));
+  if (bestPipes > allTimeBest) allTimeBest = bestPipes;
+
+  bestHistory.push({
+    gen: generation,
+    best: Math.max(...fitnesses),
+    avg: fitnesses.reduce((a, b) => a + b, 0) / fitnesses.length,
+  });
+
+  const brains = cats.map(c => c.brain);
+  const newBrains = ga.evolve(brains, fitnesses);
+
+  generation++;
+  cats = newBrains.map(b => new Cat(b));
+  obsMgr.reset();
+  bgOffset = 0;
+  frameCount = 0;
+
+  updateStats();
+  drawGraph();
+}
+
+// Cache DOM references
+const elGen = document.getElementById('gen');
+const elAlive = document.getElementById('alive');
+const elBest = document.getElementById('best');
+const elAlltime = document.getElementById('alltime');
+
+function updateStats() {
+  let aliveCount = 0;
+  let bestPipes = 0;
+  for (const cat of cats) {
+    if (cat.alive) aliveCount++;
+    if (cat.pipesPassed > bestPipes) bestPipes = cat.pipesPassed;
+  }
+  elGen.textContent = generation;
+  elAlive.textContent = aliveCount;
+  elBest.textContent = bestPipes;
+  elAlltime.textContent = allTimeBest;
+}
+
+// Returns true if generation is still alive
+function simStep() {
+  if (!cats.some(c => c.alive)) return false;
+
+  // Match original game order: cat decides, cat moves, obstacles move, collision check
+  for (const cat of cats) {
+    cat.decide(obsMgr.obstacles);
+    cat.update();
+  }
+  obsMgr.update();
+  for (const cat of cats) {
+    cat.checkCollision(obsMgr.obstacles);
+    cat.scorePipes(obsMgr.obstacles);
+  }
+
+  bgOffset = (bgOffset - SCROLL_SPEED) % 2760;
+  frameCount++;
+  return true;
+}
+
+function render() {
+  ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
+
+  // Background
+  if (bgImg.complete) {
+    const bgW = 2760 * (CANVAS_H / 600);
+    ctx.drawImage(bgImg, -bgOffset % bgW, 0, bgW, CANVAS_H);
+    ctx.drawImage(bgImg, (-bgOffset % bgW) + bgW, 0, bgW, CANVAS_H);
+  }
+
+  // Obstacles
+  const obs = obsMgr.obstacles;
+  for (let i = 0; i < obs.length; i++) {
+    if (i % 2 === 0) {
+      if (lampImg.complete) ctx.drawImage(lampImg, obs[i].posX, obs[i].posY + 10, OBS_WIDTH, OBS_HEIGHT);
+    } else {
+      if (stoolImg.complete) ctx.drawImage(stoolImg, obs[i].posX - 10, obs[i].posY - 5, OBS_WIDTH * 1.3, OBS_HEIGHT * 1.3);
+    }
+  }
+
+  // Find best alive cat and count alive/pipes in one pass
+  let bestAliveIdx = -1;
+  let bestAliveFitness = -1;
+  let aliveCount = 0;
+  let bestPipes = 0;
+  for (let i = 0; i < cats.length; i++) {
+    if (!cats[i].alive) continue;
+    aliveCount++;
+    if (cats[i].pipesPassed > bestPipes) bestPipes = cats[i].pipesPassed;
+    if (cats[i].fitness > bestAliveFitness) {
+      bestAliveFitness = cats[i].fitness;
+      bestAliveIdx = i;
+    }
+  }
+
+  // Draw cats
+  for (let i = 0; i < cats.length; i++) {
+    const cat = cats[i];
+    if (!cat.alive) continue;
+    const sprite = kittySprites[cat.spriteNum];
+    if (!sprite || !sprite.complete) continue;
+
+    ctx.save();
+    ctx.globalAlpha = i === bestAliveIdx ? 1 : 0.25;
+    ctx.translate(KITTY_X, cat.y);
+    ctx.rotate((cat.rotation + 30) * TO_RAD);
+    ctx.drawImage(sprite, -KITTY_DRAW_R, -KITTY_DRAW_R, KITTY_DRAW_R * 2, KITTY_DRAW_R * 2);
+    ctx.restore();
+  }
+  ctx.globalAlpha = 1;
+
+  // HUD overlay
+  ctx.fillStyle = 'rgba(0,0,0,0.5)';
+  ctx.fillRect(0, 0, CANVAS_W, 36);
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 14px sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText(`Gen ${generation}  |  Alive: ${aliveCount}/${POP_SIZE}  |  Pipes: ${bestPipes}`, 10, 24);
+
+  // Draw network viz for best alive cat
+  if (bestAliveIdx >= 0) drawNetwork(cats[bestAliveIdx]);
+}
+
+// Pre-computed layout for network visualization
+const NET_VIZ = {
+  w: 380, h: 140,
+  inputLabels: ['How high am I?', 'Am I falling?', 'How far is gap?', 'Where is gap?', 'Above/below gap?'],
+  inputX: 110, hiddenX: 220, outputX: 340,
+  inputYs: [18, 40, 62, 84, 106],
+  hiddenYs: [12, 34, 56, 78, 100, 122],
+  outputY: 70,
+  inputSize: 5,
+  hiddenSize: 6,
+};
+
+function drawNetwork(cat) {
+  const { w, h, inputLabels, inputX, hiddenX, outputX, inputYs, hiddenYs, outputY, inputSize, hiddenSize } = NET_VIZ;
+  netCtx.clearRect(0, 0, w, h);
+
+  // Build inputs using same logic as Cat.decide()
+  const nextTop = cat.findNextPipe(obsMgr.obstacles);
+  let inputs = [0, 0, 0, 0, 0];
+  if (nextTop) {
+    const gapCenterY = nextTop.posY + nextTop.height + OBS_Y_GAP / 2;
+    inputs = [
+      cat.y / CANVAS_H,
+      Math.max(-1, Math.min(1, cat.fallSpeed / MAX_FALL_SPEED)),
+      (nextTop.posX - KITTY_X) / CANVAS_W,
+      gapCenterY / CANVAS_H,
+      (cat.y - gapCenterY) / CANVAS_H,
+    ];
+  }
+
+  // Reuse NeuralNet.forward() — single source of truth for activations
+  const { output, hidden } = cat.brain.forward(inputs);
+  const weights = cat.brain.weights;
+
+  // Draw connections: input -> hidden
+  // Weight layout: for hidden neuron h, input weights are at indices h*(inputSize+1) + i,
+  // bias at h*(inputSize+1) + inputSize
+  for (let i = 0; i < inputSize; i++) {
+    for (let h = 0; h < hiddenSize; h++) {
+      const wIdx = h * (inputSize + 1) + i;
+      const ww = weights[wIdx];
+      netCtx.strokeStyle = ww > 0 ? 'rgba(100,200,100,0.3)' : 'rgba(200,100,100,0.3)';
+      netCtx.lineWidth = Math.min(2, Math.abs(ww));
+      netCtx.beginPath();
+      netCtx.moveTo(inputX + 4, inputYs[i]);
+      netCtx.lineTo(hiddenX - 4, hiddenYs[h]);
+      netCtx.stroke();
+    }
+  }
+
+  // Draw connections: hidden -> output
+  // Output weights start after all input-hidden weights+biases: hiddenSize*(inputSize+1)
+  const hoBase = hiddenSize * (inputSize + 1);
+  for (let h = 0; h < hiddenSize; h++) {
+    const ww = weights[hoBase + h];
+    netCtx.strokeStyle = ww > 0 ? 'rgba(100,200,100,0.4)' : 'rgba(200,100,100,0.4)';
+    netCtx.lineWidth = Math.min(2.5, Math.abs(ww));
+    netCtx.beginPath();
+    netCtx.moveTo(hiddenX + 4, hiddenYs[h]);
+    netCtx.lineTo(outputX - 4, outputY);
+    netCtx.stroke();
+  }
+
+  // Draw input nodes + labels
+  netCtx.font = '9px sans-serif';
+  netCtx.textAlign = 'right';
+  for (let i = 0; i < inputSize; i++) {
+    const brightness = Math.min(255, Math.floor(Math.abs(inputs[i]) * 255));
+    netCtx.fillStyle = `rgb(${brightness}, ${100 + brightness / 2}, ${255 - brightness})`;
+    netCtx.beginPath();
+    netCtx.arc(inputX, inputYs[i], 4, 0, Math.PI * 2);
+    netCtx.fill();
+    netCtx.fillStyle = '#888';
+    netCtx.fillText(inputLabels[i], inputX - 8, inputYs[i] + 3);
+  }
+
+  // Draw hidden nodes with activation visualization
+  for (let h = 0; h < hiddenSize; h++) {
+    const raw = hidden[h]; // tanh output: -1 to 1
+    const absVal = Math.min(1, Math.abs(raw));
+    const radius = 5 + absVal * 6; // 5..11 based on activation strength
+    const cx = hiddenX, cy = hiddenYs[h];
+
+    // Outer glow proportional to activation
+    if (absVal > 0.15) {
+      const glowColor = raw > 0
+        ? `rgba(100,230,140,${absVal * 0.35})`
+        : `rgba(230,100,120,${absVal * 0.35})`;
+      netCtx.beginPath();
+      netCtx.arc(cx, cy, radius + 4, 0, Math.PI * 2);
+      netCtx.fillStyle = glowColor;
+      netCtx.fill();
+    }
+
+    // Filled circle — green for positive, red for negative, gray for near-zero
+    const intensity = Math.floor(absVal * 220);
+    netCtx.fillStyle = absVal < 0.1
+      ? '#444'
+      : raw > 0
+        ? `rgb(${60 + intensity / 3}, ${120 + intensity / 2}, ${80 + intensity / 3})`
+        : `rgb(${120 + intensity / 2}, ${60 + intensity / 3}, ${80 + intensity / 3})`;
+    netCtx.beginPath();
+    netCtx.arc(cx, cy, radius, 0, Math.PI * 2);
+    netCtx.fill();
+
+    // Activation value label
+    netCtx.fillStyle = absVal > 0.5 ? '#fff' : '#aaa';
+    netCtx.font = '8px sans-serif';
+    netCtx.textAlign = 'center';
+    netCtx.fillText(raw.toFixed(1), cx, cy + 3);
+  }
+
+  // Draw output node
+  netCtx.fillStyle = output > 0.5 ? '#e94560' : '#555';
+  netCtx.beginPath();
+  netCtx.arc(outputX, outputY, 7, 0, Math.PI * 2);
+  netCtx.fill();
+  netCtx.fillStyle = '#aaa';
+  netCtx.textAlign = 'left';
+  netCtx.font = '10px sans-serif';
+  netCtx.fillText(output > 0.5 ? 'JUMP!' : 'wait', outputX + 12, outputY + 4);
+  netCtx.fillStyle = '#666';
+  netCtx.font = '9px sans-serif';
+  netCtx.fillText(output.toFixed(2), outputX + 12, outputY + 16);
+}
+
+function drawSingleGraph(ctx, w, h, data, color, label) {
+  ctx.clearRect(0, 0, w, h);
+  if (data.length < 2) return;
+
+  const maxVal = Math.max(...data, 1);
+  const padL = 30, padR = 8, padT = 6, padB = 14;
+  const gw = w - padL - padR;
+  const gh = h - padT - padB;
+
+  // Grid lines + axis labels
+  ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+  ctx.lineWidth = 1;
+  ctx.fillStyle = '#555';
+  ctx.font = '8px sans-serif';
+  ctx.textAlign = 'right';
+  for (let t = 0; t <= 1; t += 0.5) {
+    const y = padT + gh - t * gh;
+    ctx.beginPath();
+    ctx.moveTo(padL, y);
+    ctx.lineTo(padL + gw, y);
+    ctx.stroke();
+    ctx.fillText(Math.round(maxVal * t), padL - 3, y + 3);
+  }
+
+  // Fill under curve
+  ctx.beginPath();
+  ctx.moveTo(padL, padT + gh);
+  for (let i = 0; i < data.length; i++) {
+    const x = padL + (i / (data.length - 1)) * gw;
+    const y = padT + gh - (data[i] / maxVal) * gh;
+    ctx.lineTo(x, y);
+  }
+  ctx.lineTo(padL + gw, padT + gh);
+  ctx.closePath();
+  ctx.fillStyle = color.replace(')', ',0.08)').replace('rgb', 'rgba');
+  ctx.fill();
+
+  // Line
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  for (let i = 0; i < data.length; i++) {
+    const x = padL + (i / (data.length - 1)) * gw;
+    const y = padT + gh - (data[i] / maxVal) * gh;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+
+  // Current value label
+  ctx.fillStyle = color;
+  ctx.font = '9px sans-serif';
+  ctx.textAlign = 'right';
+  ctx.fillText(Math.round(data[data.length - 1]), w - padR, padT + 8);
+
+  // Gen label
+  ctx.fillStyle = '#555';
+  ctx.textAlign = 'right';
+  ctx.fillText(`Gen ${data.length}`, w - padR, h - 2);
+}
+
+function drawGraph() {
+  const bestData = bestHistory.map(b => b.best);
+  const avgData = bestHistory.map(b => b.avg);
+  drawSingleGraph(graphBestCtx, 380, 70, bestData, 'rgb(233,69,96)', 'Best');
+  drawSingleGraph(graphAvgCtx, 380, 70, avgData, 'rgb(100,200,255)', 'Avg');
+}
+
+let animId = null;
+function gameLoop() {
+  for (let s = 0; s < speed; s++) {
+    // Stop stepping if generation ended (prevents phantom frames on new gen)
+    if (!simStep()) {
+      nextGeneration();
+      break;
+    }
+  }
+  render();
+  updateStats();
+  if (running) animId = requestAnimationFrame(gameLoop);
+}
+
+function start() {
+  if (running) return;
+  running = true;
+  btnStart.textContent = 'Pause';
+  btnStart.classList.remove('btn-primary');
+  btnStart.classList.add('btn-active');
+  gameLoop();
+}
+
+function pause() {
+  running = false;
+  btnStart.textContent = 'Resume';
+  btnStart.classList.remove('btn-active');
+  btnStart.classList.add('btn-primary');
+  if (animId) cancelAnimationFrame(animId);
+}
+
+function resetAll() {
+  pause();
+  generation = 1;
+  allTimeBest = 0;
+  bestHistory = [];
+  initPopulation();
+  render();
+  updateStats();
+  drawGraph();
+  btnStart.textContent = 'Start';
+}
+
+// Controls
+const btnStart = document.getElementById('btnStart');
+const btnSpeed = document.getElementById('btnSpeed');
+const btnReset = document.getElementById('btnReset');
+
+btnStart.addEventListener('click', () => running ? pause() : start());
+btnSpeed.addEventListener('click', () => {
+  const speeds = [1, 2, 5, 10];
+  const labels = ['1x', '2x', '5x', '10x'];
+  const idx = speeds.indexOf(speed);
+  const next = (idx + 1) % speeds.length;
+  speed = speeds[next];
+  btnSpeed.textContent = `Speed: ${labels[next]}`;
+});
+btnReset.addEventListener('click', resetAll);
+
+// Wait for all images to load, then init
+function loadImage(img) {
+  if (img.complete) return Promise.resolve();
+  return new Promise((resolve, reject) => {
+    img.onload = resolve;
+    img.onerror = () => reject(new Error(`Failed to load: ${img.src.slice(0, 50)}...`));
+  });
+}
+
+Promise.all([bgImg, lampImg, stoolImg, ...kittySprites].map(loadImage))
+  .then(() => { initPopulation(); render(); updateStats(); })
+  .catch(err => console.error('Image load failed:', err));
+</script>
+</body>
+</html>
